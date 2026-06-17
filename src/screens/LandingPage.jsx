@@ -153,7 +153,7 @@ export function LandingPage({ onLaunchApp }) {
 
           {/* Right CTAs */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
-            <button style={btnNavGhost}
+            <button style={btnNavGhost} onClick={onLaunchApp}
               onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--emerald-500)'; e.currentTarget.style.color = 'var(--emerald-600)'; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--slate-200)'; e.currentTarget.style.color = 'var(--navy-800)'; }}
             >Sign In</button>

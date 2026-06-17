@@ -17,7 +17,7 @@ const stageColors = {
   Won:         { bg: 'var(--green-100)',  fg: 'var(--green-600)',  header: '#ECFDF5' },
 };
 
-const emptyForm = { name: '', company: '', value: '', score: 50, stage: 'New' };
+const emptyForm = { name: '', company: '', value: '', score: 50, status: 'New' };
 
 function DealCard({ deal, onMove, onDelete }) {
   const [open, setOpen] = useState(false);
@@ -55,7 +55,7 @@ function DealCard({ deal, onMove, onDelete }) {
         <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid var(--border-soft)', display: 'flex', flexDirection: 'column', gap: 6 }} onClick={e => e.stopPropagation()}>
           <div style={{ font: 'var(--weight-semibold) 11px/1 var(--font-display)', color: 'var(--text-muted)', marginBottom: 4 }}>MOVE TO</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
-            {stages.filter(s => s !== deal.stage).map(s => (
+            {stages.filter(s => s !== deal.status).map(s => (
               <button key={s} onClick={() => onMove(deal.id, s)} style={{
                 padding: '4px 9px', borderRadius: 'var(--radius-sm)',
                 border: '1px solid var(--border-soft)', background: 'var(--white)',
@@ -98,7 +98,7 @@ export function Pipeline() {
     if (!form.name.trim()) return;
     setSaving(true);
     const d = db(user?.id);
-    await d.leads.insert([{ ...form, value: parseFloat(form.value) || 0, score: parseInt(form.score) || 50 }]);
+    await d.leads.insert([{ name: form.name, company: form.company, status: form.status, value: parseFloat(form.value) || 0, score: parseInt(form.score) || 50 }]);
     setSaving(false);
     setShowForm(false);
     setForm(emptyForm);
@@ -161,7 +161,7 @@ export function Pipeline() {
             ))}
             <div>
               <label style={{ font: 'var(--weight-semibold) 11px/1 var(--font-display)', color: 'var(--text-muted)', display: 'block', marginBottom: 5 }}>Stage</label>
-              <select value={form.stage} onChange={e => setForm(p => ({ ...p, stage: e.target.value }))}
+              <select value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value }))}
                 style={{ width: '100%', padding: '8px 10px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-soft)', font: '13px/1 var(--font-body)', outline: 'none', background: 'var(--white)', boxSizing: 'border-box' }}>
                 {stages.map(s => <option key={s}>{s}</option>)}
               </select>

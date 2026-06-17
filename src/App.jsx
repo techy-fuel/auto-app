@@ -13,6 +13,9 @@ import { Reports } from './screens/Reports';
 import { LandingPage } from './screens/LandingPage';
 import { MobileApp } from './screens/MobileApp';
 import { AuthModal } from './components/auth/AuthModal';
+import { Admin } from './screens/Admin';
+
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
 
 const crmScreens = {
   dashboard: Dashboard,
@@ -23,6 +26,7 @@ const crmScreens = {
   whatsapp: WhatsApp,
   finance: Finance,
   reports: Reports,
+  admin: Admin,
 };
 
 export default function App() {
@@ -88,7 +92,7 @@ export default function App() {
   const Screen = crmScreens[page] || Dashboard;
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'var(--bg-app)' }}>
-      <Sidebar active={page} onNavigate={setPage} />
+      <Sidebar active={page} onNavigate={setPage} isAdmin={user?.emailAddresses?.[0]?.emailAddress === ADMIN_EMAIL} />
       <div style={{ marginLeft: 'var(--sidebar-w)', flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         <Topbar
           page={page}

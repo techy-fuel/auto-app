@@ -5,21 +5,6 @@ import { Avatar } from '../components/core/Avatar';
 import { AiInsight } from '../components/data/AiInsight';
 import { supabase } from '../lib/supabase';
 
-const fallbackConversations = [
-  { id: 1, name: 'Ahmed Al Rashidi', phone: '+971 50 123 4567', lastMsg: 'Can I get more info on the Land Cruiser?', time: '2m ago', unread: 3, status: 'hot', vehicle: 'Toyota Land Cruiser 2023' },
-  { id: 2, name: 'Sara Mohammed',    phone: '+971 55 234 5678', lastMsg: 'What financing options do you have?', time: '15m ago', unread: 1, status: 'warm', vehicle: 'Honda Civic 2022' },
-  { id: 3, name: 'Khalid Mansoor',   phone: '+971 52 345 6789', lastMsg: 'I want to book a test drive', time: '1h ago', unread: 0, status: 'hot', vehicle: 'Nissan Patrol 2023' },
-  { id: 4, name: 'Fatima Al Zaabi',  phone: '+971 56 456 7890', lastMsg: 'Is the Corolla still available?', time: '3h ago', unread: 0, status: 'warm', vehicle: 'Toyota Corolla 2021' },
-  { id: 5, name: 'Omar Bin Saeed',   phone: '+971 54 567 8901', lastMsg: 'Thank you, I will think about it.', time: '1d ago', unread: 0, status: 'cold', vehicle: 'Toyota Camry 2022' },
-];
-
-const chatHistory = [
-  { role: 'customer', text: 'Hello, I saw your ad for Land Cruiser 2023. Can you share more details?', time: '10:02 AM' },
-  { role: 'agent',    text: 'Hello Ahmed! Thank you for reaching out. The Land Cruiser 2023 is available in both petrol and diesel variants. Starting price is AED 185,000. Would you like to schedule a test drive?', time: '10:05 AM' },
-  { role: 'customer', text: 'Yes I\'m interested. What colors are available?', time: '10:08 AM' },
-  { role: 'agent',    text: 'We currently have Pearl White, Midnight Black, and Desert Sand. All with full warranty and free service for 3 years. Shall I reserve one for you?', time: '10:10 AM' },
-  { role: 'customer', text: 'Can I get more info on the Land Cruiser?', time: '10:15 AM' },
-];
 
 const templates = [
   { label: 'Welcome Message', text: 'Welcome! Thank you for your interest. How can I assist you today?' },
@@ -31,28 +16,27 @@ const templates = [
 const statusBadge = { hot: 'red', warm: 'amber', cold: 'blue' };
 
 export function WhatsApp({ user }) {
-  const [conversations, setConversations] = useState(fallbackConversations);
-  const [active, setActive] = useState(fallbackConversations[0]);
+  const [conversations, setConversations] = useState([]);
+  const [active, setActive] = useState(null);
   const [input, setInput] = useState('');
-  const [msgs, setMsgs] = useState(chatHistory);
+  const [msgs, setMsgs] = useState([]);
 
   useEffect(() => {
     if (!user?.id) return;
     supabase.from('leads').select('id, name, phone, status, stage, notes').eq('user_id', user.id).order('created_at', { ascending: false }).limit(10)
       .then(({ data }) => {
-        if (!data?.length) return;
-        const mapped = data.map((l, i) => ({
+        const mapped = (data || []).map((l, i) => ({
           id: l.id,
           name: l.name,
-          phone: l.phone || '+971 50 000 0000',
+          phone: l.phone || '—',
           lastMsg: l.notes || 'Interested in a vehicle',
           time: i === 0 ? 'Just now' : `${i + 1}h ago`,
           unread: i < 2 ? 2 - i : 0,
-          status: l.stage === 'Negotiation' || l.status === 'hot' ? 'hot' : l.stage === 'Proposal' ? 'warm' : 'cold',
+          status: l.stage === 'Negotiation' ? 'hot' : l.stage === 'Proposal' ? 'warm' : 'cold',
           vehicle: '—',
         }));
         setConversations(mapped);
-        setActive(mapped[0]);
+        if (mapped.length) setActive(mapped[0]);
       });
   }, [user?.id]);
 
@@ -76,6 +60,11 @@ export function WhatsApp({ user }) {
           </div>
         </div>
         <div style={{ flex: 1, overflowY: 'auto' }}>
+          {conversations.length === 0 && (
+            <div style={{ padding: 24, textAlign: 'center', color: 'var(--text-muted)', font: '13px/1.5 var(--font-body)' }}>
+              No leads yet.<br/>Add leads to see them here.
+            </div>
+          )}
           {conversations.map(c => (
             <div key={c.id} onClick={() => setActive(c)} style={{
               display: 'flex', gap: 10, padding: '12px 16px',
@@ -102,6 +91,12 @@ export function WhatsApp({ user }) {
 
       {/* Chat Window */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        {!active && (
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', font: '14px/1 var(--font-body)' }}>
+            Select a conversation to start chatting
+          </div>
+        )}
+        {active && <>
         {/* Chat header */}
         <div style={{ padding: 'var(--space-4) var(--space-5)', borderBottom: '1px solid var(--border-soft)', background: 'var(--white)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -165,29 +160,33 @@ export function WhatsApp({ user }) {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           </Button>
         </div>
+        </>}
       </div>
 
       {/* Right panel */}
       <div style={{ width: 260, borderLeft: '1px solid var(--border-soft)', background: 'var(--white)', padding: 'var(--space-5)', overflowY: 'auto' }}>
         <h3 style={{ font: 'var(--weight-bold) 13px/1 var(--font-display)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 'var(--space-4)' }}>Lead Info</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {[
-            { label: 'Status', value: <Badge tone="red" dot>Hot Lead</Badge> },
-            { label: 'Vehicle Interest', value: active.vehicle },
-            { label: 'Phone', value: active.phone },
-            { label: 'Conversations', value: '3 this week' },
-            { label: 'Last Contact', value: '2 minutes ago' },
-            { label: 'Assigned To', value: 'Rashid M.' },
-          ].map(f => (
-            <div key={f.label} style={{ borderBottom: '1px solid var(--divider)', paddingBottom: 10 }}>
-              <div style={{ font: '11px/1 var(--font-body)', color: 'var(--text-muted)', marginBottom: 4 }}>{f.label}</div>
-              <div style={{ font: 'var(--weight-medium) 13px/1 var(--font-body)', color: 'var(--text-strong)' }}>{f.value}</div>
+        {active ? (
+          <>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {[
+                { label: 'Status', value: <Badge tone={active.status === 'hot' ? 'red' : active.status === 'warm' ? 'amber' : 'blue'} dot>{active.status}</Badge> },
+                { label: 'Phone', value: active.phone },
+                { label: 'Last Message', value: active.lastMsg },
+              ].map(f => (
+                <div key={f.label} style={{ borderBottom: '1px solid var(--divider)', paddingBottom: 10 }}>
+                  <div style={{ font: '11px/1 var(--font-body)', color: 'var(--text-muted)', marginBottom: 4 }}>{f.label}</div>
+                  <div style={{ font: 'var(--weight-medium) 13px/1 var(--font-body)', color: 'var(--text-strong)' }}>{f.value}</div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        <div style={{ marginTop: 'var(--space-5)' }}>
-          <Button fullWidth variant="primary" size="sm">Convert to Deal</Button>
-        </div>
+            <div style={{ marginTop: 'var(--space-5)' }}>
+              <Button fullWidth variant="primary" size="sm">View Lead</Button>
+            </div>
+          </>
+        ) : (
+          <div style={{ color: 'var(--text-muted)', font: '13px/1.5 var(--font-body)' }}>Select a conversation to see lead details.</div>
+        )}
       </div>
     </div>
   );

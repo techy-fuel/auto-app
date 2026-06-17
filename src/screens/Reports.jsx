@@ -28,24 +28,6 @@ function BarChart({ data, color = 'var(--emerald-500)', height = 160 }) {
   );
 }
 
-const salesByMonth = [
-  { label: 'Jan', label2: '32', value: 32 }, { label: 'Feb', label2: '28', value: 28 },
-  { label: 'Mar', label2: '35', value: 35 }, { label: 'Apr', label2: '40', value: 40 },
-  { label: 'May', label2: '38', value: 38 }, { label: 'Jun', label2: '38*', value: 38 },
-];
-
-const salesByModel = [
-  { label: 'Corolla', label2: '12', value: 12 }, { label: 'Civic', label2: '9', value: 9 },
-  { label: 'Patrol', label2: '6', value: 6 }, { label: 'LC', label2: '4', value: 4 },
-  { label: 'Camry', label2: '7', value: 7 },
-];
-
-const teamPerformance = [
-  { name: 'Rashid M.',   role: 'Sales Manager', sold: 18, target: 20, revenue: 'AED 1.8M', convRate: '34%', score: 91 },
-  { name: 'Sara K.',     role: 'Senior Sales',  sold: 12, target: 15, revenue: 'AED 890K',  convRate: '28%', score: 78 },
-  { name: 'Ahmed T.',    role: 'Sales Rep',     sold: 5,  target: 10, revenue: 'AED 360K',  convRate: '18%', score: 52 },
-  { name: 'Noura H.',    role: 'Sales Rep',     sold: 3,  target: 10, revenue: 'AED 220K',  convRate: '14%', score: 38 },
-];
 
 const tabs = [
   { value: 'overview', label: 'Overview' },
@@ -57,10 +39,12 @@ export function Reports({ user }) {
   const [tab, setTab] = useState('overview');
   const [period, setPeriod] = useState('This Month');
   const [stats, setStats] = useState({ total: 0, revenue: 0, avgDeal: 0, convRate: 0 });
+  const [salesByMonth, setSalesByMonth] = useState([]);
+  const [salesByStage, setSalesByStage] = useState([]);
 
   useEffect(() => {
     if (!user?.id) return;
-    supabase.from('leads').select('value, stage, status').eq('user_id', user.id).then(({ data }) => {
+    supabase.from('leads').select('value, stage, status, created_at').eq('user_id', user.id).then(({ data }) => {
       const leads = data || [];
       const won = leads.filter(l => l.stage === 'Won' || l.status === 'won');
       const totalRevenue = won.reduce((s, l) => s + (l.value || 0), 0);
@@ -70,6 +54,26 @@ export function Reports({ user }) {
         avgDeal: won.length ? Math.round(totalRevenue / won.length) : 0,
         convRate: leads.length ? ((won.length / leads.length) * 100).toFixed(1) : 0,
       });
+
+      // Leads by month (last 6 months)
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const now = new Date();
+      const monthCounts = {};
+      for (let i = 5; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        monthCounts[`${d.getFullYear()}-${d.getMonth()}`] = { label: months[d.getMonth()], value: 0 };
+      }
+      leads.forEach(l => {
+        const d = new Date(l.created_at);
+        const key = `${d.getFullYear()}-${d.getMonth()}`;
+        if (monthCounts[key]) monthCounts[key].value++;
+      });
+      setSalesByMonth(Object.values(monthCounts).map(m => ({ ...m, label2: String(m.value) })));
+
+      // Leads by stage
+      const stageCounts = {};
+      leads.forEach(l => { const s = l.stage || 'Unknown'; stageCounts[s] = (stageCounts[s] || 0) + 1; });
+      setSalesByStage(Object.entries(stageCounts).map(([label, value]) => ({ label, label2: String(value), value })));
     });
   }, [user?.id]);
 
@@ -111,18 +115,18 @@ export function Reports({ user }) {
           </div>
 
           <AiInsight title="AI Report Summary" tone="opportunity">
-            June is tracking 18% above last year. Toyota Corolla accounts for 32% of sales. Ahmed T. and Noura H. are behind target — recommend coaching session this week.
+            {stats.total > 0 ? `${stats.total} total leads tracked. ${stats.convRate}% conversion rate. ${stats.revenue ? `AED ${(stats.revenue/1000).toFixed(0)}K revenue from won deals.` : ''}` : 'Add leads to unlock AI-powered sales reports.'}
           </AiInsight>
 
           {/* Charts */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-5)' }}>
             <div style={{ background: 'var(--white)', border: '1px solid var(--border-soft)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-6)', boxShadow: 'var(--shadow-card)' }}>
-              <h3 style={{ font: 'var(--weight-bold) 14px/1 var(--font-display)', color: 'var(--text-strong)', marginBottom: 'var(--space-5)' }}>Units Sold — Last 6 Months</h3>
-              <BarChart data={salesByMonth} color="var(--navy-600)" />
+              <h3 style={{ font: 'var(--weight-bold) 14px/1 var(--font-display)', color: 'var(--text-strong)', marginBottom: 'var(--space-5)' }}>Leads Added — Last 6 Months</h3>
+              {salesByMonth.length > 0 ? <BarChart data={salesByMonth} color="var(--navy-600)" /> : <div style={{ color: 'var(--text-muted)', fontSize: 13, padding: '20px 0' }}>No data yet</div>}
             </div>
             <div style={{ background: 'var(--white)', border: '1px solid var(--border-soft)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-6)', boxShadow: 'var(--shadow-card)' }}>
-              <h3 style={{ font: 'var(--weight-bold) 14px/1 var(--font-display)', color: 'var(--text-strong)', marginBottom: 'var(--space-5)' }}>Sales by Model — This Month</h3>
-              <BarChart data={salesByModel} color="var(--emerald-500)" />
+              <h3 style={{ font: 'var(--weight-bold) 14px/1 var(--font-display)', color: 'var(--text-strong)', marginBottom: 'var(--space-5)' }}>Leads by Stage</h3>
+              {salesByStage.length > 0 ? <BarChart data={salesByStage} color="var(--emerald-500)" /> : <div style={{ color: 'var(--text-muted)', fontSize: 13, padding: '20px 0' }}>No data yet</div>}
             </div>
           </div>
         </>
@@ -130,82 +134,18 @@ export function Reports({ user }) {
 
       {tab === 'team' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-          <AiInsight title="AI Coaching Alert" tone="alert">
-            Ahmed T. and Noura H. are at 50% and 30% of their monthly targets. AI recommends a joint coaching session focused on test drive conversion techniques.
+          <AiInsight title="Team Performance" tone="opportunity">
+            Team performance tracking coming soon. Add your team members to unlock this feature.
           </AiInsight>
-          <div style={{ background: 'var(--white)', border: '1px solid var(--border-soft)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-card)', overflow: 'hidden' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr style={{ background: 'var(--slate-50)' }}>
-                  {['Sales Rep', 'Role', 'Sold', 'Target', 'Attainment', 'Revenue', 'Conv. Rate', 'AI Score'].map(h => (
-                    <th key={h} style={{ padding: '12px 18px', textAlign: 'left', font: 'var(--weight-semibold) 11px/1 var(--font-display)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid var(--border-soft)' }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {teamPerformance.map(rep => {
-                  const pct = Math.round((rep.sold / rep.target) * 100);
-                  const tone = pct >= 80 ? 'emerald' : pct >= 50 ? 'amber' : 'red';
-                  return (
-                    <tr key={rep.name} style={{ borderBottom: '1px solid var(--divider)' }}
-                      onMouseEnter={e => e.currentTarget.style.background = 'var(--slate-50)'}
-                      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                    >
-                      <td style={{ padding: '14px 18px', font: 'var(--weight-bold) 13px/1 var(--font-body)', color: 'var(--text-strong)' }}>{rep.name}</td>
-                      <td style={{ padding: '14px 18px', font: '12px/1 var(--font-body)', color: 'var(--text-muted)' }}>{rep.role}</td>
-                      <td style={{ padding: '14px 18px', font: 'var(--weight-bold) 15px/1 var(--font-display)', color: 'var(--text-strong)' }}>{rep.sold}</td>
-                      <td style={{ padding: '14px 18px', font: '13px/1 var(--font-body)', color: 'var(--text-muted)' }}>{rep.target}</td>
-                      <td style={{ padding: '14px 18px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <div style={{ width: 60, height: 6, borderRadius: 'var(--radius-pill)', background: 'var(--slate-100)', overflow: 'hidden' }}>
-                            <div style={{ width: `${Math.min(100, pct)}%`, height: '100%', background: pct >= 80 ? 'var(--emerald-500)' : pct >= 50 ? 'var(--amber-500)' : 'var(--red-500)', borderRadius: 'var(--radius-pill)' }} />
-                          </div>
-                          <Badge tone={tone}>{pct}%</Badge>
-                        </div>
-                      </td>
-                      <td style={{ padding: '14px 18px', font: 'var(--weight-semibold) 13px/1 var(--font-display)', color: 'var(--text-strong)' }}>{rep.revenue}</td>
-                      <td style={{ padding: '14px 18px', font: 'var(--weight-semibold) 13px/1 var(--font-display)', color: 'var(--text-body)' }}>{rep.convRate}</td>
-                      <td style={{ padding: '14px 18px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <ProgressRing value={rep.score} size={36} stroke={4} label={String(rep.score)} />
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          <div style={{ background: 'var(--white)', border: '1px solid var(--border-soft)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-12)', textAlign: 'center', color: 'var(--text-muted)', font: '14px/1.5 var(--font-body)' }}>
+            No team data yet. This section will show individual sales rep performance once you add team members.
           </div>
         </div>
       )}
 
       {tab === 'vehicles' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-4)' }}>
-            {[
-              { model: 'Toyota Corolla 2021', sold: 12, inquiries: 48, revenue: 'AED 816K',  convRate: '25%', trend: 'up' },
-              { model: 'Honda Civic 2022',    sold: 9,  inquiries: 37, revenue: 'AED 648K',  convRate: '24%', trend: 'up' },
-              { model: 'Nissan Patrol 2023',  sold: 6,  inquiries: 29, revenue: 'AED 1.17M', convRate: '21%', trend: 'up' },
-              { model: 'Land Cruiser 2023',   sold: 4,  inquiries: 24, revenue: 'AED 740K',  convRate: '17%', trend: 'down' },
-              { model: 'Toyota Camry 2022',   sold: 7,  inquiries: 31, revenue: 'AED 665K',  convRate: '23%', trend: 'up' },
-              { model: 'Hyundai Tucson 2023', sold: 0,  inquiries: 15, revenue: '—',          convRate: '0%',  trend: 'down' },
-            ].map(v => (
-              <div key={v.model} style={{ background: 'var(--white)', border: '1px solid var(--border-soft)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-5)', boxShadow: 'var(--shadow-card)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-                  <div style={{ width: 38, height: 38, borderRadius: 'var(--radius-sm)', background: 'var(--slate-50)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>🚗</div>
-                  <div style={{ font: 'var(--weight-bold) 13px/1.3 var(--font-display)', color: 'var(--text-strong)' }}>{v.model}</div>
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                  {[{ l: 'Sold', v: v.sold }, { l: 'Inquiries', v: v.inquiries }, { l: 'Revenue', v: v.revenue }, { l: 'Conv. Rate', v: v.convRate }].map(f => (
-                    <div key={f.l} style={{ background: 'var(--slate-50)', borderRadius: 8, padding: '8px 10px' }}>
-                      <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 3 }}>{f.l}</div>
-                      <div style={{ font: 'var(--weight-bold) 14px/1 var(--font-display)', color: 'var(--text-strong)' }}>{f.v}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+        <div style={{ background: 'var(--white)', border: '1px solid var(--border-soft)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-12)', textAlign: 'center', color: 'var(--text-muted)', font: '14px/1.5 var(--font-body)' }}>
+          Add inventory vehicles to see vehicle-level sales reports here.
         </div>
       )}
     </div>

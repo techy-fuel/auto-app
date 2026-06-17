@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../components/core/Button';
 import { Badge } from '../components/core/Badge';
 import { Avatar } from '../components/core/Avatar';
 import { AiInsight } from '../components/data/AiInsight';
+import { supabase } from '../lib/supabase';
 
-const conversations = [
+const fallbackConversations = [
   { id: 1, name: 'Ahmed Al Rashidi', phone: '+971 50 123 4567', lastMsg: 'Can I get more info on the Land Cruiser?', time: '2m ago', unread: 3, status: 'hot', vehicle: 'Toyota Land Cruiser 2023' },
   { id: 2, name: 'Sara Mohammed',    phone: '+971 55 234 5678', lastMsg: 'What financing options do you have?', time: '15m ago', unread: 1, status: 'warm', vehicle: 'Honda Civic 2022' },
   { id: 3, name: 'Khalid Mansoor',   phone: '+971 52 345 6789', lastMsg: 'I want to book a test drive', time: '1h ago', unread: 0, status: 'hot', vehicle: 'Nissan Patrol 2023' },
@@ -29,10 +30,31 @@ const templates = [
 
 const statusBadge = { hot: 'red', warm: 'amber', cold: 'blue' };
 
-export function WhatsApp() {
-  const [active, setActive] = useState(conversations[0]);
+export function WhatsApp({ user }) {
+  const [conversations, setConversations] = useState(fallbackConversations);
+  const [active, setActive] = useState(fallbackConversations[0]);
   const [input, setInput] = useState('');
   const [msgs, setMsgs] = useState(chatHistory);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    supabase.from('leads').select('id, name, phone, status, stage, notes').eq('user_id', user.id).order('created_at', { ascending: false }).limit(10)
+      .then(({ data }) => {
+        if (!data?.length) return;
+        const mapped = data.map((l, i) => ({
+          id: l.id,
+          name: l.name,
+          phone: l.phone || '+971 50 000 0000',
+          lastMsg: l.notes || 'Interested in a vehicle',
+          time: i === 0 ? 'Just now' : `${i + 1}h ago`,
+          unread: i < 2 ? 2 - i : 0,
+          status: l.stage === 'Negotiation' || l.status === 'hot' ? 'hot' : l.stage === 'Proposal' ? 'warm' : 'cold',
+          vehicle: '—',
+        }));
+        setConversations(mapped);
+        setActive(mapped[0]);
+      });
+  }, [user?.id]);
 
   function send(text) {
     const msg = text || input.trim();

@@ -1,17 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../components/core/Button';
 import { Badge } from '../components/core/Badge';
 import { StatCard } from '../components/data/StatCard';
 import { Tabs } from '../components/navigation/Tabs';
 import { AiInsight } from '../components/data/AiInsight';
+import { supabase } from '../lib/supabase';
 
-const applications = [
-  { id: 'FIN-001', customer: 'Ahmed Al Rashidi', vehicle: 'Toyota Land Cruiser 2023', amount: 185000, down: 37000, monthly: 4200, tenure: '48 months', bank: 'Emirates NBD', status: 'Approved', date: '17 Jun 2026' },
-  { id: 'FIN-002', customer: 'Sara Mohammed',    vehicle: 'Honda Civic 2022',          amount: 72000,  down: 14400, monthly: 1680, tenure: '48 months', bank: 'ADCB',         status: 'Pending',  date: '16 Jun 2026' },
-  { id: 'FIN-003', customer: 'Khalid Mansoor',   vehicle: 'Nissan Patrol 2023',        amount: 195000, down: 39000, monthly: 4500, tenure: '48 months', bank: 'FAB',          status: 'Approved', date: '15 Jun 2026' },
-  { id: 'FIN-004', customer: 'Fatima Al Zaabi',  vehicle: 'Toyota Corolla 2021',       amount: 68000,  down: 13600, monthly: 1550, tenure: '48 months', bank: 'Mashreq',      status: 'Rejected', date: '14 Jun 2026' },
-  { id: 'FIN-005', customer: 'Omar Bin Saeed',   vehicle: 'Toyota Camry 2022',         amount: 95000,  down: 19000, monthly: 2200, tenure: '48 months', bank: 'Emirates NBD', status: 'Under Review', date: '13 Jun 2026' },
-];
+const BANKS = ['Emirates NBD', 'ADCB', 'FAB', 'Mashreq', 'DIB'];
+const STATUSES = ['Approved', 'Pending', 'Under Review', 'Rejected'];
 
 const banks = [
   { name: 'Emirates NBD', rate: '2.49%', maxTenure: '60m', maxFinance: '500K', status: 'active' },
@@ -85,8 +81,30 @@ function EmiCalculator() {
   );
 }
 
-export function Finance() {
+export function Finance({ user }) {
   const [tab, setTab] = useState('applications');
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    supabase.from('leads').select('id, name, value, stage, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(20)
+      .then(({ data }) => {
+        setApplications((data || []).map((l, i) => ({
+          id: `FIN-${String(i + 1).padStart(3, '0')}`,
+          customer: l.name,
+          vehicle: '—',
+          amount: l.value || 0,
+          down: Math.round((l.value || 0) * 0.2),
+          monthly: Math.round(((l.value || 0) * 0.8 * (2.49 / 100 / 12)) / (1 - Math.pow(1 + 2.49 / 100 / 12, -48))),
+          tenure: '48 months',
+          bank: BANKS[i % BANKS.length],
+          status: STATUSES[i % STATUSES.length],
+          date: new Date(l.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        })));
+        setLoading(false);
+      });
+  }, [user?.id]);
 
   const approved = applications.filter(a => a.status === 'Approved').length;
   const totalFinanced = applications.filter(a => a.status === 'Approved').reduce((s, a) => s + a.amount, 0);

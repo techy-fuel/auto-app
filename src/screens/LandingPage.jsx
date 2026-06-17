@@ -857,7 +857,7 @@ export function LandingPage({ onLaunchApp, onSignUp }) {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 'var(--space-6)', marginBottom: 'var(--space-12)' }}>
             {[
               { icon: '🇦🇪', title: 'UAE-First', desc: 'Built for the UAE market — AED pricing, local workflows, and regional AI insights.' },
-              { icon: '🔒', title: 'Secure by Default', desc: 'Every dealership's data is isolated. Multi-tenant architecture with encryption at rest.' },
+              { icon: '🔒', title: 'Secure by Default', desc: "Every dealership's data is isolated. Multi-tenant architecture with encryption at rest." },
               { icon: '⚡', title: 'Always Improving', desc: 'We ship updates every week based on real feedback from dealerships like yours.' },
               { icon: '🤝', title: 'Dedicated Support', desc: 'Real humans available via WhatsApp and email — not just a chatbot.' },
             ].map(item => (

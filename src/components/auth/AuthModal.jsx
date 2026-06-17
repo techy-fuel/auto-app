@@ -21,7 +21,7 @@ export function AuthModal({ mode: initialMode = 'signin', onClose }) {
       const result = await signIn.create({ identifier: form.email, password: form.password });
       if (result.status === 'complete') {
         await setActiveSignIn({ session: result.createdSessionId });
-        onClose();
+        window.location.reload();
       }
     } catch (err) {
       setError(err.errors?.[0]?.longMessage || err.errors?.[0]?.message || 'Sign in failed');
@@ -51,7 +51,7 @@ export function AuthModal({ mode: initialMode = 'signin', onClose }) {
       const result = await signUp.attemptEmailAddressVerification({ code });
       if (result.status === 'complete') {
         await setActiveSignUp({ session: result.createdSessionId });
-        onClose();
+        window.location.reload();
       }
     } catch (err) {
       setError(err.errors?.[0]?.longMessage || err.errors?.[0]?.message || 'Invalid code');

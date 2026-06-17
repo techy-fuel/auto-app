@@ -198,7 +198,7 @@ export function Copilot({ user }) {
             <div style={{ font: '12px/1 var(--font-body)', color: 'var(--text-muted)', marginTop: 3 }}>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                 <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--emerald-500)', display: 'inline-block' }} />
-                Online · Powered by Claude
+                Online · Powered by TechyFuel
               </span>
             </div>
           </div>

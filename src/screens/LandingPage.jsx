@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export function LandingPage({ onLaunchApp }) {
+export function LandingPage({ onLaunchApp, onSignUp }) {
   const [faqOpen, setFaqOpen] = useState(null);
 
   const toggleFaq = (index) => {
@@ -157,7 +157,7 @@ export function LandingPage({ onLaunchApp }) {
               onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--emerald-500)'; e.currentTarget.style.color = 'var(--emerald-600)'; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--slate-200)'; e.currentTarget.style.color = 'var(--navy-800)'; }}
             >Sign In</button>
-            <button style={btnNavAccent} onClick={onLaunchApp}
+            <button style={btnNavAccent} onClick={onSignUp || onLaunchApp}
               onMouseEnter={e => e.currentTarget.style.opacity = '.88'}
               onMouseLeave={e => e.currentTarget.style.opacity = '1'}
             >Get Started Free</button>
@@ -841,7 +841,54 @@ export function LandingPage({ onLaunchApp }) {
         </div>
       </section>
 
-      {/* ── 8. CTA BANNER ─────────────────────────────────────────────────── */}
+      {/* ── 8. ABOUT ──────────────────────────────────────────────────────── */}
+      <section id="about" style={{ background: 'var(--slate-50)', padding: 'var(--space-16) var(--space-6)' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 'var(--space-12)' }}>
+            <div style={{ display: 'inline-block', background: 'var(--emerald-50)', color: 'var(--emerald-700)', borderRadius: 'var(--radius-pill)', padding: '5px 14px', fontSize: '13px', fontWeight: 'var(--weight-semibold)', marginBottom: 'var(--space-5)' }}>About Us</div>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 'var(--weight-bold)', fontSize: 'clamp(28px, 3.5vw, 44px)', color: 'var(--navy-900)', letterSpacing: '-1px', margin: '0 0 var(--space-5)' }}>
+              Built for dealerships, by people who know sales
+            </h2>
+            <p style={{ fontSize: '17px', color: 'var(--slate-600)', lineHeight: '1.7', maxWidth: '620px', margin: '0 auto' }}>
+              AutoPilot CRM was built specifically for UAE car dealerships — with AED currency, Arabic-friendly workflows, and AI tuned for the regional market.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 'var(--space-6)', marginBottom: 'var(--space-12)' }}>
+            {[
+              { icon: '🇦🇪', title: 'UAE-First', desc: 'Built for the UAE market — AED pricing, local workflows, and regional AI insights.' },
+              { icon: '🔒', title: 'Secure by Default', desc: 'Every dealership's data is isolated. Multi-tenant architecture with encryption at rest.' },
+              { icon: '⚡', title: 'Always Improving', desc: 'We ship updates every week based on real feedback from dealerships like yours.' },
+              { icon: '🤝', title: 'Dedicated Support', desc: 'Real humans available via WhatsApp and email — not just a chatbot.' },
+            ].map(item => (
+              <div key={item.title} style={{ background: 'var(--white)', border: '1px solid var(--slate-200)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-7)', boxShadow: 'var(--shadow-sm)' }}>
+                <div style={{ fontSize: '32px', marginBottom: 'var(--space-4)' }}>{item.icon}</div>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 'var(--weight-bold)', fontSize: '17px', color: 'var(--navy-900)', margin: '0 0 8px' }}>{item.title}</h3>
+                <p style={{ fontSize: '14px', color: 'var(--slate-600)', lineHeight: '1.65', margin: 0 }}>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ background: 'var(--navy-900)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-10)', display: 'flex', alignItems: 'center', gap: 'var(--space-10)', flexWrap: 'wrap' }}>
+            <div style={{ flex: 1, minWidth: 260 }}>
+              <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 'var(--weight-bold)', fontSize: '22px', color: 'var(--white)', margin: '0 0 12px' }}>Our Mission</h3>
+              <p style={{ fontSize: '15px', color: 'rgba(255,255,255,.65)', lineHeight: '1.75', margin: 0 }}>
+                To give every car dealership in the UAE — from single-showroom independents to multi-brand groups — the same AI-powered sales intelligence that was previously only available to Fortune 500 companies.
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: 'var(--space-8)', flexWrap: 'wrap' }}>
+              {[{ value: '2023', label: 'Founded' }, { value: 'UAE', label: 'Headquartered' }, { value: '500+', label: 'Dealerships' }].map(s => (
+                <div key={s.label} style={{ textAlign: 'center' }}>
+                  <div style={{ fontFamily: 'var(--font-display)', fontWeight: 'var(--weight-extra)', fontSize: '32px', color: 'var(--emerald-400)', letterSpacing: '-1px' }}>{s.value}</div>
+                  <div style={{ fontSize: '13px', color: 'rgba(255,255,255,.45)', marginTop: 4 }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 9. CTA BANNER ─────────────────────────────────────────────────── */}
       <section style={{
         background: 'var(--gradient-emerald)',
         padding: 'var(--space-16) var(--space-6)',

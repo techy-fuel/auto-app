@@ -18,11 +18,6 @@ const banks = [
 ];
 
 const statusTone = { Approved: 'emerald', Pending: 'amber', Rejected: 'red', 'Under Review': 'blue' };
-const tabs = [
-  { value: 'applications', label: 'Applications', count: applications.length },
-  { value: 'banks', label: 'Bank Partners', count: banks.length },
-  { value: 'calculator', label: 'EMI Calculator' },
-];
 
 function EmiCalculator() {
   const [price, setPrice] = useState(185000);
@@ -105,6 +100,12 @@ export function Finance({ user }) {
         setLoading(false);
       });
   }, [user?.id]);
+
+  const tabs = [
+    { value: 'applications', label: 'Applications', count: applications.length },
+    { value: 'banks', label: 'Bank Partners', count: banks.length },
+    { value: 'calculator', label: 'EMI Calculator' },
+  ];
 
   const approved = applications.filter(a => a.status === 'Approved').length;
   const totalFinanced = applications.filter(a => a.status === 'Approved').reduce((s, a) => s + a.amount, 0);

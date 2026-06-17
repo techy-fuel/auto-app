@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '../components/core/Button';
 import { AiInsight } from '../components/data/AiInsight';
 import { supabase } from '../lib/supabase';
+import { apiUrl } from '../lib/api';
 import { useIsMobile } from '../hooks/useIsMobile';
 
 const suggestions = [
@@ -90,7 +91,7 @@ export function Copilot({ user }) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
-      const res = await fetch('/api/chat', {
+      const res = await fetch(apiUrl('/api/chat'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ messages: newMessages.filter(m => m.role !== 'ai' || m !== initialMessages[0]).slice(-10) }),

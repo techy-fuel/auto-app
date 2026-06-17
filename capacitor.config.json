@@ -1,0 +1,21 @@
+{
+  "appId": "com.techyfuel.autopilotcrm",
+  "appName": "AutoPilot CRM",
+  "webDir": "dist",
+  "backgroundColor": "#0A2540",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1500,
+      "backgroundColor": "#0A2540",
+      "showSpinner": false,
+      "androidScaleType": "CENTER_CROP"
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#0A2540"
+    }
+  }
+}

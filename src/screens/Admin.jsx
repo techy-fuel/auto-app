@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { apiUrl } from '../lib/api';
 
 function timeAgo(iso) {
   if (!iso) return 'Never';
@@ -24,7 +25,7 @@ export function Admin() {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
-      const res = await fetch('/api/admin-users', { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(apiUrl('/api/admin-users'), { headers: { Authorization: `Bearer ${token}` } });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed');
       setUsers(data.users);
@@ -38,7 +39,7 @@ export function Admin() {
   async function handleBan(userId, currentlyBanned) {
     setActing(userId);
     const { data: { session } } = await supabase.auth.getSession(); const token = session?.access_token;
-    await fetch('/api/admin-ban', {
+    await fetch(apiUrl('/api/admin-ban'), {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, action: currentlyBanned ? 'unban' : 'ban' }),
@@ -51,7 +52,7 @@ export function Admin() {
     if (!confirm(`Delete user "${name}" and all their data? This cannot be undone.`)) return;
     setActing(userId);
     const { data: { session } } = await supabase.auth.getSession(); const token = session?.access_token;
-    await fetch('/api/admin-delete', {
+    await fetch(apiUrl('/api/admin-delete'), {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId }),

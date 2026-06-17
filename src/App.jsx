@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from './lib/supabase';
 import { useIsMobile } from './hooks/useIsMobile';
+import { initPush } from './lib/push';
 import { Sidebar } from './components/layout/Sidebar';
 import { Topbar } from './components/layout/Topbar';
 import { Dashboard } from './screens/Dashboard';
@@ -59,6 +60,9 @@ export default function App() {
     });
     return () => subscription.unsubscribe();
   }, []);
+
+  // Register for push notifications on native apps (no-op on web)
+  useEffect(() => { initPush(); }, []);
 
   async function signOut() {
     await supabase.auth.signOut();

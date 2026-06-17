@@ -8,7 +8,7 @@ const pageTitles = {
   copilot: 'AI Copilot',
 };
 
-export function Topbar({ page }) {
+export function Topbar({ page, onMobilePreview, onLanding }) {
   return (
     <header style={{
       height: 'var(--topbar-h)',
@@ -70,6 +70,32 @@ export function Topbar({ page }) {
             background: 'var(--emerald-500)',
             border: '1.5px solid var(--white)',
           }} />
+        </button>
+
+        {/* Mobile Preview */}
+        <button onClick={onMobilePreview} style={{
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          padding: '0 12px', height: 38,
+          borderRadius: 'var(--radius-md)',
+          border: '1px solid var(--border-soft)', background: 'var(--white)',
+          font: 'var(--weight-semibold) 12px/1 var(--font-display)',
+          color: 'var(--text-body)', cursor: 'pointer',
+        }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          Mobile
+        </button>
+
+        {/* Landing Page */}
+        <button onClick={onLanding} style={{
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          padding: '0 12px', height: 38,
+          borderRadius: 'var(--radius-md)',
+          border: '1px solid var(--border-soft)', background: 'var(--white)',
+          font: 'var(--weight-semibold) 12px/1 var(--font-display)',
+          color: 'var(--text-body)', cursor: 'pointer',
+        }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Landing
         </button>
 
         {/* Avatar */}

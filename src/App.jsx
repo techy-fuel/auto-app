@@ -12,6 +12,7 @@ import { Finance } from './screens/Finance';
 import { Reports } from './screens/Reports';
 import { LandingPage } from './screens/LandingPage';
 import { MobileApp } from './screens/MobileApp';
+import { AuthModal } from './components/auth/AuthModal';
 
 const crmScreens = {
   dashboard: Dashboard,
@@ -26,9 +27,10 @@ const crmScreens = {
 
 export default function App() {
   const { isSignedIn, isLoaded, user } = useUser();
-  const { openSignIn, openSignUp, signOut } = useClerk();
+  const { signOut } = useClerk();
   const [view, setView] = useState('crm'); // 'crm' | 'mobile'
   const [page, setPage] = useState('dashboard');
+  const [authModal, setAuthModal] = useState(null); // null | 'signin' | 'signup'
 
   if (!isLoaded) {
     return (
@@ -43,10 +45,13 @@ export default function App() {
 
   if (!isSignedIn) {
     return (
-      <LandingPage
-        onLaunchApp={() => openSignIn()}
-        onSignUp={() => openSignUp()}
-      />
+      <>
+        <LandingPage
+          onLaunchApp={() => setAuthModal('signin')}
+          onSignUp={() => setAuthModal('signup')}
+        />
+        {authModal && <AuthModal mode={authModal} onClose={() => setAuthModal(null)} />}
+      </>
     );
   }
 

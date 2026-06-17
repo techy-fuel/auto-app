@@ -6,9 +6,17 @@ const pageTitles = {
   pipeline: 'Pipeline',
   inventory: 'Inventory',
   copilot: 'AI Copilot',
+  whatsapp: 'WhatsApp',
+  finance: 'Finance',
+  reports: 'Reports & Analytics',
 };
 
-export function Topbar({ page, onMobilePreview, onLanding }) {
+export function Topbar({ page, user, onMobilePreview, onSignOut }) {
+  const initials = user
+    ? ((user.firstName?.[0] || '') + (user.lastName?.[0] || '')).toUpperCase() || user.emailAddresses?.[0]?.emailAddress?.[0]?.toUpperCase() || '?'
+    : '?';
+  const displayName = user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user?.emailAddresses?.[0]?.emailAddress || '';
+
   return (
     <header style={{
       height: 'var(--topbar-h)',
@@ -85,28 +93,33 @@ export function Topbar({ page, onMobilePreview, onLanding }) {
           Mobile
         </button>
 
-        {/* Landing Page */}
-        <button onClick={onLanding} style={{
-          display: 'inline-flex', alignItems: 'center', gap: 6,
-          padding: '0 12px', height: 38,
-          borderRadius: 'var(--radius-md)',
-          border: '1px solid var(--border-soft)', background: 'var(--white)',
-          font: 'var(--weight-semibold) 12px/1 var(--font-display)',
-          color: 'var(--text-body)', cursor: 'pointer',
-        }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          Landing
-        </button>
-
-        {/* Avatar */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
-          <div style={{
-            width: 34, height: 34, borderRadius: '50%',
-            background: 'var(--emerald-600)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: 'var(--white)', fontSize: 12, fontWeight: 700,
-            border: '2px solid var(--white)', boxShadow: 'var(--shadow-sm)',
-          }}>SA</div>
+        {/* User + Sign Out */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {user?.imageUrl ? (
+            <img src={user.imageUrl} alt={displayName} style={{ width: 34, height: 34, borderRadius: '50%', border: '2px solid var(--white)', boxShadow: 'var(--shadow-sm)', objectFit: 'cover' }} />
+          ) : (
+            <div style={{
+              width: 34, height: 34, borderRadius: '50%',
+              background: 'var(--emerald-600)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'var(--white)', fontSize: 12, fontWeight: 700,
+              border: '2px solid var(--white)', boxShadow: 'var(--shadow-sm)',
+            }}>{initials}</div>
+          )}
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <span style={{ font: 'var(--weight-semibold) 12px/1.2 var(--font-display)', color: 'var(--text-strong)' }}>{displayName}</span>
+          </div>
+          <button onClick={onSignOut} style={{
+            display: 'inline-flex', alignItems: 'center', gap: 5,
+            padding: '0 10px', height: 32,
+            borderRadius: 'var(--radius-md)',
+            border: '1px solid var(--border-soft)', background: 'var(--white)',
+            font: 'var(--weight-medium) 12px/1 var(--font-display)',
+            color: 'var(--text-muted)', cursor: 'pointer',
+          }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign Out
+          </button>
         </div>
       </div>
     </header>

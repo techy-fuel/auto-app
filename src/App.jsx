@@ -124,7 +124,7 @@ export default function App() {
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'var(--bg-app)' }}>
       <Sidebar active={page} onNavigate={setPage} isAdmin={user?.email === ADMIN_EMAIL} user={user} />
       <div style={{ marginLeft: 'var(--sidebar-w)', flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        <Topbar page={page} user={user} onMobilePreview={() => setView('mobile')} onSignOut={signOut} />
+        <Topbar page={page} user={user} onMobilePreview={() => setView('mobile')} onSignOut={signOut} onNavigate={setPage} />
         <main style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
           <Screen user={user} />
         </main>

@@ -6,6 +6,9 @@ import { Leads } from './screens/Leads';
 import { Pipeline } from './screens/Pipeline';
 import { Inventory } from './screens/Inventory';
 import { Copilot } from './screens/Copilot';
+import { WhatsApp } from './screens/WhatsApp';
+import { Finance } from './screens/Finance';
+import { Reports } from './screens/Reports';
 import { LandingPage } from './screens/LandingPage';
 import { MobileApp } from './screens/MobileApp';
 
@@ -15,6 +18,9 @@ const crmScreens = {
   pipeline: Pipeline,
   inventory: Inventory,
   copilot: Copilot,
+  whatsapp: WhatsApp,
+  finance: Finance,
+  reports: Reports,
 };
 
 export default function App() {

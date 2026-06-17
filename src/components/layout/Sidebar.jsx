@@ -1,11 +1,16 @@
 import React from 'react';
 import logoWhite from '../../assets/logo-white.svg';
 
-const navItems = [
+const mainNav = [
   { id: 'dashboard', label: 'Dashboard', icon: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
       <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+    </svg>
+  )},
+  { id: 'inventory', label: 'Inventory', icon: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="17" r="1"/><circle cx="20" cy="17" r="1"/>
     </svg>
   )},
   { id: 'leads', label: 'Leads', icon: (
@@ -18,17 +23,10 @@ const navItems = [
   )},
   { id: 'pipeline', label: 'Pipeline', icon: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 12H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
-      <line x1="6" y1="16" x2="6.01" y2="16"/><line x1="10" y1="16" x2="10.01" y2="16"/>
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
     </svg>
   )},
-  { id: 'inventory', label: 'Inventory', icon: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-      <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
-    </svg>
-  )},
-  { id: 'copilot', label: 'AI Copilot', icon: (
+  { id: 'copilot', label: 'AI Assistant', badge: 'AI', icon: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2z"/>
       <path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
@@ -36,6 +34,25 @@ const navItems = [
   )},
 ];
 
+const automationNav = [
+  { id: 'whatsapp', label: 'WhatsApp', icon: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+    </svg>
+  )},
+  { id: 'finance', label: 'Finance', icon: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
+    </svg>
+  )},
+  { id: 'reports', label: 'Reports', icon: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+    </svg>
+  )},
+];
+
+const navItems = mainNav;
 const bottomItems = [
   { id: 'settings', label: 'Settings', icon: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -44,6 +61,34 @@ const bottomItems = [
     </svg>
   )},
 ];
+
+function NavBtn({ item, active, onNavigate }) {
+  const on = active === item.id;
+  return (
+    <button
+      onClick={() => onNavigate(item.id)}
+      style={{
+        display: 'flex', alignItems: 'center', gap: 12,
+        padding: '10px 14px', borderRadius: 'var(--radius-md)',
+        border: 'none', cursor: 'pointer',
+        background: on ? 'rgba(255,255,255,0.1)' : 'transparent',
+        color: on ? 'var(--white)' : 'var(--navy-300)',
+        font: `var(--weight-${on ? 'semibold' : 'medium'}) 14px/1 var(--font-display)`,
+        transition: 'all var(--dur-fast) var(--ease-out)',
+        textAlign: 'left', width: '100%', position: 'relative',
+      }}
+      onMouseEnter={e => { if (!on) { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = 'var(--white)'; } }}
+      onMouseLeave={e => { if (!on) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--navy-300)'; } }}
+    >
+      {on && <span style={{ position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)', width: 3, height: 20, background: 'var(--emerald-500)', borderRadius: '0 4px 4px 0' }} />}
+      <span style={{ color: on ? 'var(--emerald-400)' : 'inherit', display: 'inline-flex' }}>{item.icon}</span>
+      {item.label}
+      {item.badge && (
+        <span style={{ marginLeft: 'auto', padding: '2px 7px', borderRadius: 'var(--radius-pill)', background: 'var(--gradient-emerald)', color: 'var(--white)', fontSize: 10, fontWeight: 700 }}>{item.badge}</span>
+      )}
+    </button>
+  );
+}
 
 export function Sidebar({ active, onNavigate }) {
   return (
@@ -91,65 +136,38 @@ export function Sidebar({ active, onNavigate }) {
       </div>
 
       {/* Nav */}
-      <nav style={{ flex: 1, padding: 'var(--space-4) var(--space-3)' }}>
+      <nav style={{ flex: 1, padding: 'var(--space-4) var(--space-3)', overflowY: 'auto' }}>
+        {/* Main nav */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {navItems.map(item => {
-            const on = active === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => onNavigate(item.id)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                  padding: '10px 14px',
-                  borderRadius: 'var(--radius-md)',
-                  border: 'none',
-                  cursor: 'pointer',
-                  background: on ? 'rgba(255,255,255,0.1)' : 'transparent',
-                  color: on ? 'var(--white)' : 'var(--navy-300)',
-                  font: `var(--weight-${on ? 'semibold' : 'medium'}) 14px/1 var(--font-display)`,
-                  transition: 'all var(--dur-fast) var(--ease-out)',
-                  textAlign: 'left',
-                  width: '100%',
-                  position: 'relative',
-                }}
-                onMouseEnter={e => {
-                  if (!on) e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
-                  if (!on) e.currentTarget.style.color = 'var(--white)';
-                }}
-                onMouseLeave={e => {
-                  if (!on) e.currentTarget.style.background = 'transparent';
-                  if (!on) e.currentTarget.style.color = 'var(--navy-300)';
-                }}
-              >
-                {on && (
-                  <span style={{
-                    position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)',
-                    width: 3, height: 20, background: 'var(--emerald-500)',
-                    borderRadius: '0 4px 4px 0',
-                  }} />
-                )}
-                <span style={{ color: on ? 'var(--emerald-400)' : 'inherit', display: 'inline-flex' }}>
-                  {item.icon}
-                </span>
-                {item.label}
-                {item.id === 'copilot' && (
-                  <span style={{
-                    marginLeft: 'auto',
-                    padding: '2px 7px',
-                    borderRadius: 'var(--radius-pill)',
-                    background: 'var(--gradient-emerald)',
-                    color: 'var(--white)',
-                    fontSize: 10,
-                    fontWeight: 700,
-                    letterSpacing: '0.04em',
-                  }}>AI</span>
-                )}
-              </button>
-            );
-          })}
+          {mainNav.map(item => <NavBtn key={item.id} item={item} active={active} onNavigate={onNavigate} />)}
+        </div>
+
+        {/* Automation section */}
+        <div style={{ marginTop: 20 }}>
+          <div style={{
+            fontSize: 10, fontWeight: 700, letterSpacing: '0.1em',
+            color: 'var(--navy-500)', textTransform: 'uppercase',
+            padding: '0 14px', marginBottom: 6,
+          }}>Automation</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {automationNav.map(item => <NavBtn key={item.id} item={item} active={active} onNavigate={onNavigate} />)}
+          </div>
+        </div>
+
+        {/* AI Sales Score card */}
+        <div style={{
+          margin: '20px 6px 0',
+          background: 'rgba(16,185,129,0.12)',
+          border: '1px solid rgba(16,185,129,0.25)',
+          borderRadius: 'var(--radius-md)',
+          padding: '12px 14px',
+        }}>
+          <div style={{ fontSize: 11, color: 'var(--emerald-400)', fontWeight: 700, marginBottom: 6 }}>✦ AI Sales Score</div>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+            <span style={{ font: 'var(--weight-extra) 28px/1 var(--font-display)', color: 'var(--white)' }}>82</span>
+            <span style={{ fontSize: 12, color: 'var(--navy-400)' }}>/100</span>
+          </div>
+          <div style={{ fontSize: 11, color: 'var(--navy-400)', marginTop: 4 }}>Dealership health · this month</div>
         </div>
       </nav>
 

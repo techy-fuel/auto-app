@@ -842,8 +842,8 @@ export function LandingPage({ onLaunchApp, onSignUp }) {
       </section>
 
       {/* ── 8. ABOUT ──────────────────────────────────────────────────────── */}
-      <section id="about" style={{ background: 'var(--slate-50)', padding: 'var(--space-16) var(--space-6)' }}>
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+      <section id="about" style={{ background: 'var(--slate-50)', padding: 'var(--space-16) var(--space-8)' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', paddingLeft: 'var(--space-4)', paddingRight: 'var(--space-4)' }}>
           <div style={{ textAlign: 'center', marginBottom: 'var(--space-12)' }}>
             <div style={{ display: 'inline-block', background: 'var(--emerald-50)', color: 'var(--emerald-700)', borderRadius: 'var(--radius-pill)', padding: '5px 14px', fontSize: '13px', fontWeight: 'var(--weight-semibold)', marginBottom: 'var(--space-5)' }}>About Us</div>
             <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 'var(--weight-bold)', fontSize: 'clamp(28px, 3.5vw, 44px)', color: 'var(--navy-900)', letterSpacing: '-1px', margin: '0 0 var(--space-5)' }}>
@@ -854,7 +854,7 @@ export function LandingPage({ onLaunchApp, onSignUp }) {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--space-6)', marginBottom: 'var(--space-12)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 'var(--space-5)', marginBottom: 'var(--space-12)' }}>
             {[
               { icon: '🇦🇪', title: 'UAE-First', desc: 'Built for the UAE market — AED pricing, local workflows, and regional AI insights.' },
               { icon: '🔒', title: 'Secure by Default', desc: "Every dealership's data is isolated. Multi-tenant architecture with encryption at rest." },

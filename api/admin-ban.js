@@ -1,6 +1,11 @@
-import { createClerkClient } from '@clerk/backend';
+import { createClient } from '@supabase/supabase-js';
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+
+const supabaseAdmin = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -9,26 +14,22 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).end();
 
-  const authHeader = req.headers.authorization || '';
-  const token = authHeader.replace('Bearer ', '');
-  const { userId, action } = req.body; // action: 'ban' | 'unban'
+  const token = (req.headers.authorization || '').replace('Bearer ', '');
+  const { userId, action } = req.body;
 
-  const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
-  let callerEmail;
-  try {
-    const payload = await clerk.verifyToken(token);
-    const caller = await clerk.users.getUser(payload.sub);
-    callerEmail = caller.emailAddresses[0]?.emailAddress;
-  } catch {
-    return res.status(401).json({ error: 'Invalid token' });
-  }
-
-  if (callerEmail !== ADMIN_EMAIL) return res.status(403).json({ error: 'Forbidden' });
+  const { data: { user: caller }, error } = await supabaseAdmin.auth.getUser(token);
+  if (error || !caller) return res.status(401).json({ error: 'Invalid token' });
+  if (caller.email !== ADMIN_EMAIL) return res.status(403).json({ error: 'Forbidden' });
 
   if (action === 'ban') {
-    await clerk.users.banUser(userId);
+    // Ban for 100 years
+    await supabaseAdmin.auth.admin.updateUserById(userId, {
+      ban_duration: '876000h',
+    });
   } else {
-    await clerk.users.unbanUser(userId);
+    await supabaseAdmin.auth.admin.updateUserById(userId, {
+      ban_duration: 'none',
+    });
   }
 
   return res.status(200).json({ success: true });

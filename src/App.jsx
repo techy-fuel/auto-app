@@ -14,6 +14,7 @@ import { LandingPage } from './screens/LandingPage';
 import { MobileApp } from './screens/MobileApp';
 import { AuthModal } from './components/auth/AuthModal';
 import { Admin } from './screens/Admin';
+import { ResetPassword } from './screens/ResetPassword';
 
 const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
 
@@ -35,14 +36,21 @@ export default function App() {
   const [view, setView] = useState('crm');
   const [page, setPage] = useState('dashboard');
   const [authModal, setAuthModal] = useState(null);
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       setLoading(false);
     });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsPasswordRecovery(true);
+        setUser(session?.user ?? null);
+      } else {
+        setIsPasswordRecovery(false);
+        setUser(session?.user ?? null);
+      }
     });
     return () => subscription.unsubscribe();
   }, []);
@@ -61,6 +69,10 @@ export default function App() {
         </div>
       </div>
     );
+  }
+
+  if (isPasswordRecovery) {
+    return <ResetPassword onDone={() => { setIsPasswordRecovery(false); }} />;
   }
 
   if (!user) {

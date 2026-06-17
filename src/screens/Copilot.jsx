@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '../components/core/Button';
 import { AiInsight } from '../components/data/AiInsight';
+import { supabase } from '../lib/supabase';
 
 const suggestions = [
   'Which leads should I prioritize today?',
@@ -139,7 +140,7 @@ function MessageBubble({ msg }) {
   );
 }
 
-export function Copilot() {
+export function Copilot({ user }) {
   const [messages, setMessages] = useState(initialMessages);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -149,17 +150,29 @@ export function Copilot() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  function sendMessage(text) {
+  async function sendMessage(text) {
     const msg = text || input.trim();
     if (!msg) return;
     setInput('');
     const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    setMessages(prev => [...prev, { role: 'user', content: msg, time: now }]);
+    const newMessages = [...messages, { role: 'user', content: msg, time: now }];
+    setMessages(newMessages);
     setLoading(true);
-    setTimeout(() => {
-      setMessages(prev => [...prev, { role: 'ai', content: getAiResponse(msg), time: now }]);
-      setLoading(false);
-    }, 900 + Math.random() * 600);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ messages: newMessages.filter(m => m.role !== 'ai' || m !== initialMessages[0]).slice(-10) }),
+      });
+      const data = await res.json();
+      const reply = data.content || data.error || 'Sorry, I could not get a response.';
+      setMessages(prev => [...prev, { role: 'ai', content: reply, time: now }]);
+    } catch {
+      setMessages(prev => [...prev, { role: 'ai', content: 'Connection error. Please try again.', time: now }]);
+    }
+    setLoading(false);
   }
 
   return (

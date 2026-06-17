@@ -6,7 +6,7 @@ import { Leads } from './screens/Leads';
 import { Pipeline } from './screens/Pipeline';
 import { Inventory } from './screens/Inventory';
 import { Copilot } from './screens/Copilot';
-import LandingPage from './screens/LandingPage';
+import { LandingPage } from './screens/LandingPage';
 import { MobileApp } from './screens/MobileApp';
 
 const crmScreens = {

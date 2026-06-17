@@ -1,1289 +1,955 @@
-import { useState } from "react";
+import React, { useState } from 'react';
 
-const styles = {
-  // Layout
-  page: {
-    fontFamily: "var(--font-body)",
-    color: "var(--slate-700)",
-    backgroundColor: "var(--white)",
-    margin: 0,
-    padding: 0,
-  },
+export function LandingPage({ onLaunchApp }) {
+  const [faqOpen, setFaqOpen] = useState(null);
 
-  // Navbar
-  navbar: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "var(--space-4) var(--space-8)",
-    backgroundColor: "var(--navy-900)",
-    position: "sticky",
-    top: 0,
-    zIndex: 100,
-    borderBottom: "1px solid rgba(255,255,255,0.08)",
-  },
-  navLogo: {
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--space-2)",
-    textDecoration: "none",
-  },
-  navLogoIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: "var(--radius-md)",
-    background: "var(--gradient-emerald)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: 16,
-  },
-  navLogoText: {
-    fontFamily: "var(--font-display)",
-    fontWeight: "var(--weight-bold)",
-    fontSize: 18,
-    color: "var(--white)",
-    letterSpacing: "-0.3px",
-  },
-  navLinks: {
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--space-8)",
-    listStyle: "none",
-    margin: 0,
-    padding: 0,
-  },
-  navLink: {
-    color: "var(--slate-300)",
-    textDecoration: "none",
-    fontSize: 15,
-    fontWeight: "var(--weight-medium)",
-    transition: "color 0.2s",
-    cursor: "pointer",
-  },
-  navCta: {
-    backgroundColor: "var(--emerald-600)",
-    color: "var(--white)",
-    padding: "var(--space-2) var(--space-5)",
-    borderRadius: "var(--radius-md)",
-    border: "none",
-    fontSize: 14,
-    fontWeight: "var(--weight-semibold)",
-    cursor: "pointer",
-    transition: "background-color 0.2s",
-    fontFamily: "var(--font-body)",
-  },
+  const toggleFaq = (index) => {
+    setFaqOpen(faqOpen === index ? null : index);
+  };
 
-  // Hero
-  hero: {
-    background: "var(--gradient-brand)",
-    padding: "var(--space-16) var(--space-8) var(--space-16)",
-    textAlign: "center",
-    position: "relative",
-    overflow: "hidden",
-  },
-  heroBadge: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "var(--space-2)",
-    backgroundColor: "rgba(52, 211, 153, 0.15)",
-    border: "1px solid rgba(52, 211, 153, 0.35)",
-    borderRadius: "var(--radius-full)",
-    padding: "var(--space-1) var(--space-4)",
-    fontSize: 13,
-    fontWeight: "var(--weight-semibold)",
-    color: "var(--emerald-400)",
-    marginBottom: "var(--space-6)",
-  },
-  heroHeadline: {
-    fontFamily: "var(--font-display)",
-    fontWeight: "var(--weight-bold)",
-    fontSize: "clamp(36px, 5vw, 64px)",
-    color: "var(--white)",
-    lineHeight: 1.1,
-    letterSpacing: "-1.5px",
-    margin: "0 auto var(--space-6)",
-    maxWidth: 800,
-  },
-  heroHeadlineAccent: {
-    color: "var(--emerald-400)",
-  },
-  heroSubtext: {
-    fontSize: "clamp(16px, 2vw, 20px)",
-    color: "var(--slate-300)",
-    maxWidth: 580,
-    margin: "0 auto var(--space-10)",
-    lineHeight: 1.65,
-  },
-  heroCtas: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "var(--space-4)",
-    flexWrap: "wrap",
-    marginBottom: "var(--space-14)",
-  },
-  btnPrimary: {
-    backgroundColor: "var(--emerald-600)",
-    color: "var(--white)",
-    padding: "var(--space-4) var(--space-8)",
-    borderRadius: "var(--radius-lg)",
-    border: "none",
-    fontSize: 16,
-    fontWeight: "var(--weight-semibold)",
-    cursor: "pointer",
-    fontFamily: "var(--font-body)",
-    boxShadow: "0 4px 24px rgba(16, 185, 129, 0.35)",
-    transition: "transform 0.15s, box-shadow 0.15s",
-  },
-  btnSecondary: {
-    backgroundColor: "transparent",
-    color: "var(--white)",
-    padding: "var(--space-4) var(--space-8)",
-    borderRadius: "var(--radius-lg)",
-    border: "1.5px solid rgba(255,255,255,0.25)",
-    fontSize: 16,
-    fontWeight: "var(--weight-semibold)",
-    cursor: "pointer",
-    fontFamily: "var(--font-body)",
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--space-2)",
-  },
+  const faqs = [
+    {
+      q: 'How does AI lead scoring work?',
+      a: 'Our AI analyzes 50+ behavioral signals including email engagement, website visits, company size, industry fit, and CRM activity history. Each lead receives a score from 0–100 updated in real time, so your reps always know who to call first.',
+    },
+    {
+      q: 'Can I import my existing CRM data?',
+      a: 'Yes. AutoPilot CRM supports one-click imports from Salesforce, HubSpot, Pipedrive, and any CSV export. Your data is mapped automatically, and our onboarding team will guide you through the migration at no extra charge.',
+    },
+    {
+      q: 'Is my data secure?',
+      a: 'Absolutely. We are SOC 2 Type II certified and GDPR compliant. All data is encrypted at rest (AES-256) and in transit (TLS 1.3). We never sell or share your data with third parties.',
+    },
+    {
+      q: 'Do you offer a free trial?',
+      a: 'Yes — every plan starts with a 14-day free trial, no credit card required. You get full access to all features on your chosen plan so you can evaluate AutoPilot CRM with real data before committing.',
+    },
+    {
+      q: 'What integrations are available?',
+      a: 'AutoPilot CRM integrates with Gmail, Outlook, Slack, Zoom, LinkedIn Sales Navigator, Stripe, Zapier, and 100+ more tools via our native integrations and REST API. Enterprise customers also get custom webhook support.',
+    },
+  ];
 
-  // Dashboard card
-  dashboardCard: {
-    maxWidth: 720,
-    margin: "0 auto",
-    backgroundColor: "var(--navy-800)",
-    borderRadius: "var(--radius-xl)",
-    border: "1px solid rgba(255,255,255,0.1)",
-    boxShadow: "var(--shadow-xl)",
-    overflow: "hidden",
-  },
-  dashboardBar: {
-    backgroundColor: "var(--navy-900)",
-    padding: "var(--space-3) var(--space-5)",
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--space-2)",
-    borderBottom: "1px solid rgba(255,255,255,0.08)",
-  },
-  dashboardTitle: {
-    marginLeft: "var(--space-3)",
-    fontSize: 13,
-    color: "var(--slate-400)",
-    fontWeight: "var(--weight-medium)",
-  },
-  dashboardBody: {
-    padding: "var(--space-5) var(--space-6)",
-  },
-  dashboardHeader: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "var(--space-4)",
-  },
-  dashboardSectionTitle: {
-    fontSize: 12,
-    fontWeight: "var(--weight-semibold)",
-    color: "var(--slate-400)",
-    textTransform: "uppercase",
-    letterSpacing: "0.8px",
-  },
-  dashboardFilterBtn: {
-    fontSize: 11,
-    color: "var(--emerald-400)",
-    backgroundColor: "rgba(52, 211, 153, 0.1)",
-    border: "1px solid rgba(52, 211, 153, 0.25)",
-    borderRadius: "var(--radius-md)",
-    padding: "2px 10px",
-    cursor: "pointer",
-    fontFamily: "var(--font-body)",
-  },
-  dealRow: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "var(--space-3) var(--space-4)",
-    backgroundColor: "rgba(255,255,255,0.04)",
-    borderRadius: "var(--radius-md)",
-    marginBottom: "var(--space-2)",
-    border: "1px solid rgba(255,255,255,0.06)",
-  },
-  dealLeft: {
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--space-3)",
-  },
-  dealName: {
-    fontSize: 14,
-    fontWeight: "var(--weight-semibold)",
-    color: "var(--white)",
-    marginBottom: 2,
-  },
-  dealCompany: {
-    fontSize: 12,
-    color: "var(--slate-400)",
-  },
-  dealRight: {
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--space-4)",
-  },
-  dealValue: {
-    fontSize: 14,
-    fontWeight: "var(--weight-semibold)",
-    color: "var(--white)",
-  },
-  dealScore: {
-    fontSize: 12,
-    fontWeight: "var(--weight-bold)",
-    color: "var(--emerald-400)",
-    minWidth: 36,
-    textAlign: "right",
-  },
+  const features = [
+    { icon: '🎯', title: 'AI Lead Scoring', desc: 'Score every lead 0–100 based on 50+ behavioral signals' },
+    { icon: '📊', title: 'Pipeline Analytics', desc: 'Real-time visibility into every deal stage and bottleneck' },
+    { icon: '✉️', title: 'Email Automation', desc: 'AI-drafted emails personalized to each lead\'s behavior' },
+    { icon: '📱', title: 'Mobile CRM', desc: 'Full CRM power on your phone — leads, AI, and pipeline anywhere' },
+    { icon: '⚡', title: 'Instant Forecasting', desc: 'Accurate revenue forecasts powered by machine learning' },
+    { icon: '🤝', title: 'Team Intelligence', desc: 'See which reps need coaching and where deals get stuck' },
+  ];
 
-  // Stats
-  statsBar: {
-    background: "var(--navy-900)",
-    padding: "var(--space-10) var(--space-8)",
-    display: "flex",
-    justifyContent: "center",
-    gap: "var(--space-16)",
-    flexWrap: "wrap",
-    borderBottom: "1px solid rgba(255,255,255,0.06)",
-  },
-  statItem: {
-    textAlign: "center",
-  },
-  statNumber: {
-    fontFamily: "var(--font-display)",
-    fontWeight: "var(--weight-bold)",
-    fontSize: "clamp(28px, 4vw, 40px)",
-    color: "var(--white)",
-    letterSpacing: "-1px",
-    marginBottom: "var(--space-1)",
-  },
-  statLabel: {
-    fontSize: 14,
-    color: "var(--slate-400)",
-    fontWeight: "var(--weight-medium)",
-  },
+  // ── Shared style tokens ──────────────────────────────────────────────────
+  const btnBase = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '6px',
+    fontFamily: 'var(--font-body)',
+    fontWeight: 'var(--weight-semibold)',
+    fontSize: '15px',
+    borderRadius: 'var(--radius-pill)',
+    border: 'none',
+    cursor: 'pointer',
+    transition: 'opacity .18s, transform .14s, box-shadow .18s',
+    textDecoration: 'none',
+    whiteSpace: 'nowrap',
+  };
 
-  // Section
-  section: {
-    padding: "var(--space-16) var(--space-8)",
-    maxWidth: 1120,
-    margin: "0 auto",
-  },
-  sectionLabel: {
-    fontSize: 13,
-    fontWeight: "var(--weight-semibold)",
-    color: "var(--emerald-600)",
-    textTransform: "uppercase",
-    letterSpacing: "1px",
-    marginBottom: "var(--space-3)",
-  },
-  sectionTitle: {
-    fontFamily: "var(--font-display)",
-    fontWeight: "var(--weight-bold)",
-    fontSize: "clamp(28px, 3.5vw, 44px)",
-    color: "var(--navy-900)",
-    lineHeight: 1.15,
-    letterSpacing: "-0.8px",
-    margin: "0 0 var(--space-4) 0",
-  },
-  sectionSubtitle: {
-    fontSize: 18,
-    color: "var(--slate-600)",
-    maxWidth: 540,
-    lineHeight: 1.6,
-    marginBottom: "var(--space-12)",
-  },
+  const btnEmerald = {
+    ...btnBase,
+    background: 'var(--gradient-emerald)',
+    color: 'var(--white)',
+    padding: '13px 28px',
+    boxShadow: '0 4px 18px rgba(5,150,105,.35)',
+  };
 
-  // Features
-  featuresGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-    gap: "var(--space-6)",
-  },
-  featureCard: {
-    backgroundColor: "var(--white)",
-    border: "1px solid var(--slate-200)",
-    borderRadius: "var(--radius-xl)",
-    padding: "var(--space-7)",
-    boxShadow: "var(--shadow-md)",
-  },
-  featureIcon: {
-    fontSize: 36,
-    marginBottom: "var(--space-4)",
-    display: "block",
-  },
-  featureTitle: {
-    fontFamily: "var(--font-display)",
-    fontWeight: "var(--weight-semibold)",
-    fontSize: 18,
-    color: "var(--navy-900)",
-    marginBottom: "var(--space-2)",
-  },
-  featureDesc: {
-    fontSize: 15,
-    color: "var(--slate-600)",
-    lineHeight: 1.65,
-  },
+  const btnGhost = {
+    ...btnBase,
+    background: 'transparent',
+    color: 'var(--white)',
+    padding: '12px 26px',
+    border: '1.5px solid rgba(255,255,255,.35)',
+  };
 
-  // AI Demo section
-  aiSection: {
-    backgroundColor: "var(--navy-900)",
-    padding: "var(--space-16) var(--space-8)",
-  },
-  aiInner: {
-    maxWidth: 1120,
-    margin: "0 auto",
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gap: "var(--space-14)",
-    alignItems: "center",
-  },
-  aiLabelDark: {
-    fontSize: 13,
-    fontWeight: "var(--weight-semibold)",
-    color: "var(--emerald-400)",
-    textTransform: "uppercase",
-    letterSpacing: "1px",
-    marginBottom: "var(--space-3)",
-  },
-  aiTitle: {
-    fontFamily: "var(--font-display)",
-    fontWeight: "var(--weight-bold)",
-    fontSize: "clamp(26px, 3vw, 40px)",
-    color: "var(--white)",
-    lineHeight: 1.2,
-    letterSpacing: "-0.8px",
-    marginBottom: "var(--space-5)",
-  },
-  aiDesc: {
-    fontSize: 17,
-    color: "var(--slate-300)",
-    lineHeight: 1.65,
-    marginBottom: "var(--space-8)",
-  },
-  aiFeatureList: {
-    listStyle: "none",
-    padding: 0,
-    margin: 0,
-    display: "flex",
-    flexDirection: "column",
-    gap: "var(--space-3)",
-  },
-  aiFeatureItem: {
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--space-3)",
-    fontSize: 15,
-    color: "var(--slate-300)",
-    fontWeight: "var(--weight-medium)",
-  },
-  aiFeatureDot: {
-    width: 8,
-    height: 8,
-    borderRadius: "var(--radius-full)",
-    backgroundColor: "var(--emerald-500)",
-    flexShrink: 0,
-  },
+  const btnNavAccent = {
+    ...btnBase,
+    background: 'var(--gradient-emerald)',
+    color: 'var(--white)',
+    padding: '9px 20px',
+    fontSize: '14px',
+    boxShadow: '0 3px 12px rgba(5,150,105,.28)',
+  };
 
-  // Chat UI
-  chatCard: {
-    backgroundColor: "var(--navy-800)",
-    borderRadius: "var(--radius-xl)",
-    border: "1px solid rgba(255,255,255,0.1)",
-    boxShadow: "var(--shadow-xl)",
-    overflow: "hidden",
-  },
-  chatHeader: {
-    backgroundColor: "var(--navy-900)",
-    padding: "var(--space-4) var(--space-5)",
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--space-3)",
-    borderBottom: "1px solid rgba(255,255,255,0.08)",
-  },
-  chatHeaderIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: "var(--radius-md)",
-    background: "var(--gradient-emerald)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: 18,
-  },
-  chatHeaderText: {
-    flex: 1,
-  },
-  chatHeaderName: {
-    fontSize: 14,
-    fontWeight: "var(--weight-semibold)",
-    color: "var(--white)",
-  },
-  chatHeaderStatus: {
-    fontSize: 12,
-    color: "var(--emerald-400)",
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--space-1)",
-  },
-  chatBody: {
-    padding: "var(--space-5)",
-    display: "flex",
-    flexDirection: "column",
-    gap: "var(--space-4)",
-  },
-  chatMsgUser: {
-    display: "flex",
-    justifyContent: "flex-end",
-  },
-  chatMsgAi: {
-    display: "flex",
-    justifyContent: "flex-start",
-  },
-  chatBubbleUser: {
-    backgroundColor: "var(--emerald-600)",
-    color: "var(--white)",
-    borderRadius: "var(--radius-lg) var(--radius-lg) var(--radius-md) var(--radius-lg)",
-    padding: "var(--space-3) var(--space-4)",
-    fontSize: 14,
-    maxWidth: "75%",
-    lineHeight: 1.55,
-  },
-  chatBubbleAi: {
-    backgroundColor: "rgba(255,255,255,0.07)",
-    color: "var(--slate-200)",
-    borderRadius: "var(--radius-lg) var(--radius-lg) var(--radius-lg) var(--radius-md)",
-    padding: "var(--space-3) var(--space-4)",
-    fontSize: 14,
-    maxWidth: "85%",
-    lineHeight: 1.55,
-    border: "1px solid rgba(255,255,255,0.07)",
-  },
-  chatLeadItem: {
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--space-2)",
-    marginTop: "var(--space-2)",
-    paddingTop: "var(--space-2)",
-    borderTop: "1px solid rgba(255,255,255,0.08)",
-    fontSize: 13,
-    color: "var(--slate-300)",
-  },
-  chatLeadScore: {
-    marginLeft: "auto",
-    fontSize: 12,
-    fontWeight: "var(--weight-bold)",
-    color: "var(--emerald-400)",
-  },
-  chatInput: {
-    borderTop: "1px solid rgba(255,255,255,0.08)",
-    padding: "var(--space-3) var(--space-5)",
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--space-3)",
-    backgroundColor: "var(--navy-900)",
-  },
-  chatInputField: {
-    flex: 1,
-    backgroundColor: "rgba(255,255,255,0.06)",
-    border: "1px solid rgba(255,255,255,0.1)",
-    borderRadius: "var(--radius-md)",
-    padding: "var(--space-2) var(--space-4)",
-    fontSize: 13,
-    color: "var(--slate-400)",
-    fontFamily: "var(--font-body)",
-    outline: "none",
-  },
-  chatSendBtn: {
-    width: 34,
-    height: 34,
-    borderRadius: "var(--radius-md)",
-    backgroundColor: "var(--emerald-600)",
-    border: "none",
-    color: "var(--white)",
-    cursor: "pointer",
-    fontSize: 14,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontFamily: "var(--font-body)",
-  },
-
-  // Pricing
-  pricingSection: {
-    backgroundColor: "var(--slate-100)",
-    padding: "var(--space-16) var(--space-8)",
-  },
-  pricingInner: {
-    maxWidth: 1100,
-    margin: "0 auto",
-  },
-  pricingGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-    gap: "var(--space-6)",
-    alignItems: "start",
-  },
-  pricingBadge: {
-    position: "absolute",
-    top: -14,
-    left: "50%",
-    transform: "translateX(-50%)",
-    backgroundColor: "var(--emerald-600)",
-    color: "var(--white)",
-    fontSize: 12,
-    fontWeight: "var(--weight-bold)",
-    padding: "var(--space-1) var(--space-4)",
-    borderRadius: "var(--radius-full)",
-    whiteSpace: "nowrap",
-  },
-  pricingTier: {
-    fontSize: 13,
-    fontWeight: "var(--weight-semibold)",
-    color: "var(--slate-400)",
-    textTransform: "uppercase",
-    letterSpacing: "0.8px",
-    marginBottom: "var(--space-3)",
-  },
-  pricingPrice: {
-    display: "flex",
-    alignItems: "flex-end",
-    gap: 4,
-    marginBottom: "var(--space-2)",
-  },
-  pricingAmount: {
-    fontFamily: "var(--font-display)",
-    fontWeight: "var(--weight-bold)",
-    fontSize: 48,
-    color: "var(--navy-900)",
-    lineHeight: 1,
-    letterSpacing: "-2px",
-  },
-  pricingPer: {
-    fontSize: 15,
-    color: "var(--slate-400)",
-    paddingBottom: 6,
-  },
-  pricingDesc: {
-    fontSize: 14,
-    color: "var(--slate-600)",
-    marginBottom: "var(--space-6)",
-    lineHeight: 1.5,
-  },
-  pricingFeatures: {
-    listStyle: "none",
-    padding: 0,
-    margin: "0 0 var(--space-8) 0",
-    display: "flex",
-    flexDirection: "column",
-    gap: "var(--space-3)",
-  },
-  pricingFeatureItem: {
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--space-3)",
-    fontSize: 14,
-    color: "var(--slate-700)",
-  },
-  pricingCheck: {
-    color: "var(--emerald-600)",
-    fontWeight: "var(--weight-bold)",
-    fontSize: 15,
-    flexShrink: 0,
-  },
-
-  // FAQ
-  faqSection: {
-    padding: "var(--space-16) var(--space-8)",
-    maxWidth: 760,
-    margin: "0 auto",
-  },
-  faqItem: {
-    border: "1px solid var(--slate-200)",
-    borderRadius: "var(--radius-lg)",
-    marginBottom: "var(--space-3)",
-    overflow: "hidden",
-  },
-  faqAnswer: {
-    padding: "0 var(--space-6) var(--space-5)",
-    fontSize: 15,
-    color: "var(--slate-600)",
-    lineHeight: 1.7,
-    backgroundColor: "var(--white)",
-  },
-
-  // Footer
-  footer: {
-    backgroundColor: "var(--navy-900)",
-    borderTop: "1px solid rgba(255,255,255,0.08)",
-    padding: "var(--space-12) var(--space-8) var(--space-8)",
-  },
-  footerInner: {
-    maxWidth: 1120,
-    margin: "0 auto",
-  },
-  footerTop: {
-    display: "flex",
-    justifyContent: "space-between",
-    flexWrap: "wrap",
-    gap: "var(--space-10)",
-    marginBottom: "var(--space-10)",
-    paddingBottom: "var(--space-10)",
-    borderBottom: "1px solid rgba(255,255,255,0.08)",
-  },
-  footerBrand: {
-    maxWidth: 300,
-  },
-  footerLogoRow: {
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--space-2)",
-    marginBottom: "var(--space-4)",
-  },
-  footerLogoIcon: {
-    width: 30,
-    height: 30,
-    borderRadius: "var(--radius-md)",
-    background: "var(--gradient-emerald)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: 15,
-  },
-  footerLogoText: {
-    fontFamily: "var(--font-display)",
-    fontWeight: "var(--weight-bold)",
-    fontSize: 17,
-    color: "var(--white)",
-    letterSpacing: "-0.3px",
-  },
-  footerTagline: {
-    fontSize: 14,
-    color: "var(--slate-400)",
-    lineHeight: 1.65,
-    margin: 0,
-  },
-  footerLinks: {
-    display: "flex",
-    gap: "var(--space-12)",
-    flexWrap: "wrap",
-  },
-  footerLinkGroupTitle: {
-    fontSize: 13,
-    fontWeight: "var(--weight-semibold)",
-    color: "var(--white)",
-    textTransform: "uppercase",
-    letterSpacing: "0.7px",
-    marginBottom: "var(--space-4)",
-  },
-  footerLinkList: {
-    listStyle: "none",
-    padding: 0,
-    margin: 0,
-    display: "flex",
-    flexDirection: "column",
-    gap: "var(--space-3)",
-  },
-  footerLink: {
-    fontSize: 14,
-    color: "var(--slate-400)",
-    textDecoration: "none",
-    cursor: "pointer",
-  },
-  footerBottom: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexWrap: "wrap",
-    gap: "var(--space-4)",
-  },
-  footerCopy: {
-    fontSize: 13,
-    color: "var(--slate-400)",
-  },
-  footerLegal: {
-    display: "flex",
-    gap: "var(--space-6)",
-  },
-};
-
-const deals = [
-  {
-    initials: "AC",
-    avatarBg: "#6366f1",
-    name: "Alex Chen",
-    company: "Stripe Inc.",
-    value: "$48,500",
-    stage: "Negotiation",
-    stageColor: "#f59e0b",
-    stageBg: "rgba(245,158,11,0.12)",
-    score: "94",
-  },
-  {
-    initials: "SM",
-    avatarBg: "#ec4899",
-    name: "Sarah Miller",
-    company: "Notion Labs",
-    value: "$32,000",
-    stage: "Proposal",
-    stageColor: "#3b82f6",
-    stageBg: "rgba(59,130,246,0.12)",
-    score: "87",
-  },
-  {
-    initials: "JR",
-    avatarBg: "#10b981",
-    name: "Jake Rivera",
-    company: "Linear HQ",
-    value: "$15,750",
-    stage: "Demo",
-    stageColor: "#10b981",
-    stageBg: "rgba(16,185,129,0.12)",
-    score: "76",
-  },
-  {
-    initials: "LP",
-    avatarBg: "#f97316",
-    name: "Laura Park",
-    company: "Figma Co.",
-    value: "$91,200",
-    stage: "Closed Won",
-    stageColor: "#22c55e",
-    stageBg: "rgba(34,197,94,0.12)",
-    score: "99",
-  },
-];
-
-const features = [
-  {
-    icon: "🎯",
-    title: "AI Lead Scoring",
-    desc: "Our ML models analyze 200+ behavioral signals to rank every lead so your team always knows who to call first.",
-  },
-  {
-    icon: "📊",
-    title: "Pipeline Management",
-    desc: "Visual drag-and-drop pipelines with deal health indicators, stage velocity tracking, and revenue forecasting.",
-  },
-  {
-    icon: "📧",
-    title: "Email Automation",
-    desc: "Send hyper-personalized outreach sequences that adapt based on opens, clicks, and reply sentiment.",
-  },
-  {
-    icon: "📈",
-    title: "Real-time Analytics",
-    desc: "Live dashboards with cohort analysis, rep performance rankings, and churn prediction models built in.",
-  },
-  {
-    icon: "📱",
-    title: "Mobile CRM",
-    desc: "Full-featured iOS and Android apps with offline sync so your reps can close deals from anywhere.",
-  },
-  {
-    icon: "👥",
-    title: "Team Collaboration",
-    desc: "Shared deal rooms, internal notes, @mentions, and activity feeds keep every stakeholder aligned.",
-  },
-];
-
-const faqs = [
-  {
-    q: "How does AI lead scoring work?",
-    a: "Our AI analyzes over 200 behavioral and firmographic signals — including email engagement, website visits, company size, industry, and historical close rates — to generate a real-time score (0–100) for every lead. Scores refresh hourly as new activity is detected, so your team always works from the freshest data.",
-  },
-  {
-    q: "Can I import my existing CRM data?",
-    a: "Yes. AutoPilot CRM supports one-click imports from Salesforce, HubSpot, Pipedrive, and any CSV export. Our onboarding team runs a live data migration session at no extra charge to make sure field mappings and historical records come across cleanly.",
-  },
-  {
-    q: "Is there a free trial?",
-    a: "Absolutely. Every plan starts with a 14-day free trial — no credit card required. You get full access to all features so you can properly evaluate AutoPilot CRM with your real data and team.",
-  },
-  {
-    q: "How many users can I add?",
-    a: "The Starter plan includes up to 5 users. The Professional plan supports up to 25 users with role-based permissions. Enterprise plans include unlimited seats with advanced SSO and directory sync via Okta, Azure AD, or Google Workspace.",
-  },
-  {
-    q: "What integrations do you support?",
-    a: "We natively integrate with Gmail, Outlook, Slack, Zoom, Calendly, LinkedIn Sales Navigator, Stripe, Zapier, and 60+ more tools. Our public REST API and webhooks let you connect any custom tool your team relies on.",
-  },
-];
-
-const pricingTiers = [
-  {
-    tier: "Starter",
-    amount: "$49",
-    per: "/mo",
-    desc: "Perfect for small sales teams getting started with CRM and AI automation.",
-    features: [
-      "Up to 5 users",
-      "AI lead scoring",
-      "500 contacts",
-      "Email automation",
-      "Mobile app",
-      "Standard support",
-    ],
-    cta: "Start Free Trial",
-    highlighted: false,
-    ctaAction: true,
-  },
-  {
-    tier: "Professional",
-    amount: "$99",
-    per: "/mo",
-    desc: "Everything your growing team needs to accelerate revenue and close bigger deals.",
-    features: [
-      "Up to 25 users",
-      "Advanced AI copilot",
-      "Unlimited contacts",
-      "Pipeline automation",
-      "Real-time analytics",
-      "Priority support",
-    ],
-    cta: "Start Free Trial",
-    highlighted: true,
-    badge: "Most Popular",
-    ctaAction: true,
-  },
-  {
-    tier: "Enterprise",
-    amount: "Custom",
-    per: "",
-    desc: "Tailored pricing and dedicated support for large-scale enterprise deployments.",
-    features: [
-      "Unlimited users",
-      "Custom AI models",
-      "SSO & directory sync",
-      "Dedicated success manager",
-      "SLA guarantees",
-      "Custom integrations",
-    ],
-    cta: "Contact Sales",
-    highlighted: false,
-    ctaAction: false,
-  },
-];
-
-export default function LandingPage({ onLaunchApp }) {
-  const [openFaq, setOpenFaq] = useState(null);
-
-  const toggleFaq = (i) => setOpenFaq(openFaq === i ? null : i);
+  const btnNavGhost = {
+    ...btnBase,
+    background: 'transparent',
+    color: 'var(--navy-800)',
+    padding: '9px 18px',
+    fontSize: '14px',
+    border: '1.5px solid var(--slate-200)',
+  };
 
   return (
-    <div style={styles.page}>
-      {/* NAVBAR */}
-      <nav style={styles.navbar}>
-        <a style={styles.navLogo} href="#">
-          <div style={styles.navLogoIcon}>🚀</div>
-          <span style={styles.navLogoText}>AutoPilot CRM</span>
-        </a>
-        <ul style={styles.navLinks}>
-          <li><a style={styles.navLink} href="#features">Features</a></li>
-          <li><a style={styles.navLink} href="#pricing">Pricing</a></li>
-          <li><a style={styles.navLink} href="#demo">Demo</a></li>
-        </ul>
-        <button style={styles.navCta} onClick={onLaunchApp}>
-          Get Started Free
-        </button>
+    <div style={{ fontFamily: 'var(--font-body)', color: 'var(--text-body)', overflowX: 'hidden' }}>
+
+      {/* ── 1. NAVBAR ──────────────────────────────────────────────────────── */}
+      <nav style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
+        background: 'rgba(255,255,255,.97)',
+        backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid var(--slate-200)',
+        boxShadow: 'var(--shadow-sm)',
+      }}>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '0 var(--space-6)',
+          height: '64px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 'var(--space-8)',
+        }}>
+          {/* Logo */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+            <div style={{
+              width: '34px',
+              height: '34px',
+              borderRadius: 'var(--radius-md)',
+              background: 'var(--gradient-emerald)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '17px',
+              boxShadow: '0 3px 10px rgba(5,150,105,.3)',
+            }}>✦</div>
+            <span style={{
+              fontFamily: 'var(--font-display)',
+              fontWeight: 'var(--weight-bold)',
+              fontSize: '18px',
+              color: 'var(--navy-900)',
+              letterSpacing: '-.3px',
+            }}>AutoPilot CRM</span>
+          </div>
+
+          {/* Center nav */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-8)' }}>
+            {['Features', 'Pricing', 'About'].map((label) => (
+              <a key={label} href={`#${label.toLowerCase()}`} style={{
+                fontWeight: 'var(--weight-medium)',
+                fontSize: '15px',
+                color: 'var(--slate-700)',
+                textDecoration: 'none',
+                transition: 'color .15s',
+              }}
+                onMouseEnter={e => e.target.style.color = 'var(--emerald-600)'}
+                onMouseLeave={e => e.target.style.color = 'var(--slate-700)'}
+              >{label}</a>
+            ))}
+          </div>
+
+          {/* Right CTAs */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
+            <button style={btnNavGhost}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--emerald-500)'; e.currentTarget.style.color = 'var(--emerald-600)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--slate-200)'; e.currentTarget.style.color = 'var(--navy-800)'; }}
+            >Sign In</button>
+            <button style={btnNavAccent} onClick={onLaunchApp}
+              onMouseEnter={e => e.currentTarget.style.opacity = '.88'}
+              onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+            >Get Started Free</button>
+          </div>
+        </div>
       </nav>
 
-      {/* HERO */}
-      <section style={styles.hero}>
-        <div style={styles.heroBadge}>
-          <span>✨</span>
-          <span>Powered by GPT-4 + Proprietary ML</span>
-        </div>
-        <h1 style={styles.heroHeadline}>
-          Close More Deals with{" "}
-          <span style={styles.heroHeadlineAccent}>AI-Powered CRM</span>
-        </h1>
-        <p style={styles.heroSubtext}>
-          AutoPilot CRM uses machine learning to prioritize your leads, automate follow-ups, and give your sales team superpowers.
-        </p>
-        <div style={styles.heroCtas}>
-          <button style={styles.btnPrimary} onClick={onLaunchApp}>
-            Start Free Trial
-          </button>
-          <button style={styles.btnSecondary}>
-            <span>▶</span>
-            <span>Watch Demo</span>
-          </button>
+      {/* ── 2. HERO ────────────────────────────────────────────────────────── */}
+      <section style={{
+        background: 'var(--gradient-brand)',
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 'var(--space-16) var(--space-6)',
+        textAlign: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        {/* Subtle radial glow */}
+        <div style={{
+          position: 'absolute',
+          top: '20%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '700px',
+          height: '400px',
+          background: 'radial-gradient(ellipse, rgba(16,185,129,.13) 0%, transparent 70%)',
+          pointerEvents: 'none',
+        }} />
+
+        {/* Badge */}
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '7px',
+          background: 'rgba(16,185,129,.15)',
+          border: '1px solid rgba(16,185,129,.35)',
+          borderRadius: 'var(--radius-pill)',
+          padding: '6px 16px',
+          fontSize: '13px',
+          fontWeight: 'var(--weight-semibold)',
+          color: 'var(--emerald-400)',
+          letterSpacing: '.3px',
+          marginBottom: 'var(--space-8)',
+        }}>
+          <span>✦</span> AI-Powered Sales Intelligence
         </div>
 
-        {/* Dashboard Preview Card */}
-        <div style={styles.dashboardCard}>
-          <div style={styles.dashboardBar}>
-            <div style={{ width: 11, height: 11, borderRadius: "var(--radius-full)", backgroundColor: "#ff5f57" }} />
-            <div style={{ width: 11, height: 11, borderRadius: "var(--radius-full)", backgroundColor: "#febc2e" }} />
-            <div style={{ width: 11, height: 11, borderRadius: "var(--radius-full)", backgroundColor: "#28c840" }} />
-            <span style={styles.dashboardTitle}>AutoPilot CRM — Active Pipeline</span>
+        {/* Headline */}
+        <h1 style={{
+          fontFamily: 'var(--font-display)',
+          fontWeight: 'var(--weight-extra)',
+          fontSize: 'clamp(36px, 5.5vw, 68px)',
+          lineHeight: '1.08',
+          color: 'var(--white)',
+          maxWidth: '860px',
+          margin: '0 auto var(--space-6)',
+          letterSpacing: '-1.5px',
+        }}>
+          Close More Deals with AI That Thinks Like Your Best Salesperson
+        </h1>
+
+        {/* Subtext */}
+        <p style={{
+          fontSize: 'clamp(16px, 2vw, 20px)',
+          color: 'rgba(255,255,255,.72)',
+          maxWidth: '600px',
+          margin: '0 auto var(--space-10)',
+          lineHeight: '1.65',
+        }}>
+          AutoPilot CRM uses advanced AI to score leads, predict close dates, and tell your team exactly what to do next.
+        </p>
+
+        {/* CTA buttons */}
+        <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap', justifyContent: 'center', marginBottom: 'var(--space-5)' }}>
+          <button style={{ ...btnEmerald, padding: '15px 34px', fontSize: '16px' }} onClick={onLaunchApp}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(5,150,105,.45)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 4px 18px rgba(5,150,105,.35)'; }}
+          >Start Free Trial →</button>
+          <button style={{ ...btnGhost, padding: '14px 30px', fontSize: '16px' }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,.08)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+          >Watch Demo</button>
+        </div>
+
+        {/* Trust line */}
+        <p style={{ fontSize: '13px', color: 'rgba(255,255,255,.45)', marginBottom: 'var(--space-16)', letterSpacing: '.1px' }}>
+          No credit card required · 14-day free trial · Cancel anytime
+        </p>
+
+        {/* Dashboard mockup */}
+        <div style={{
+          background: 'rgba(255,255,255,.05)',
+          border: '1px solid rgba(255,255,255,.1)',
+          borderRadius: 'var(--radius-xl)',
+          padding: 'var(--space-6)',
+          maxWidth: '780px',
+          width: '100%',
+          boxShadow: '0 32px 80px rgba(0,0,0,.45)',
+          backdropFilter: 'blur(8px)',
+          position: 'relative',
+          zIndex: 1,
+        }}>
+          {/* Window chrome */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: 'var(--space-5)' }}>
+            {['#FF5F57', '#FFBD2E', '#28CA42'].map(c => (
+              <div key={c} style={{ width: '11px', height: '11px', borderRadius: '50%', background: c }} />
+            ))}
+            <div style={{ flex: 1, height: '24px', background: 'rgba(255,255,255,.06)', borderRadius: 'var(--radius-sm)', marginLeft: '10px' }} />
           </div>
-          <div style={styles.dashboardBody}>
-            <div style={styles.dashboardHeader}>
-              <span style={styles.dashboardSectionTitle}>Top Deals · Q2 Pipeline</span>
-              <button style={styles.dashboardFilterBtn}>AI Sorted ↑</button>
-            </div>
-            {deals.map((deal, i) => (
-              <div key={i} style={styles.dealRow}>
-                <div style={styles.dealLeft}>
-                  <div
-                    style={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: "var(--radius-md)",
-                      backgroundColor: deal.avatarBg,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 13,
-                      fontWeight: "var(--weight-bold)",
-                      color: "var(--white)",
-                      flexShrink: 0,
-                    }}
-                  >
-                    {deal.initials}
-                  </div>
-                  <div>
-                    <div style={styles.dealName}>{deal.name}</div>
-                    <div style={styles.dealCompany}>{deal.company}</div>
-                  </div>
+
+          {/* Stat row */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '14px' }}>
+            {[
+              { label: 'Open Deals', value: '142', color: 'var(--emerald-600)' },
+              { label: 'Revenue (MTD)', value: '$284K', color: '#3B82F6' },
+              { label: 'Hot Leads', value: '37', color: '#F59E0B' },
+              { label: 'Win Rate', value: '68%', color: 'var(--emerald-500)' },
+            ].map(stat => (
+              <div key={stat.label} style={{
+                background: 'rgba(255,255,255,.07)',
+                borderRadius: 'var(--radius-md)',
+                padding: '14px 16px',
+                textAlign: 'left',
+              }}>
+                <div style={{ fontSize: '11px', color: 'rgba(255,255,255,.45)', marginBottom: '5px', textTransform: 'uppercase', letterSpacing: '.5px' }}>{stat.label}</div>
+                <div style={{ fontSize: '22px', fontWeight: 'var(--weight-bold)', color: stat.color, fontFamily: 'var(--font-display)' }}>{stat.value}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Fake pipeline bars */}
+          <div style={{ background: 'rgba(255,255,255,.05)', borderRadius: 'var(--radius-md)', padding: '16px' }}>
+            <div style={{ fontSize: '12px', color: 'rgba(255,255,255,.4)', marginBottom: '12px', fontWeight: 'var(--weight-semibold)', textTransform: 'uppercase', letterSpacing: '.5px' }}>Pipeline by Stage</div>
+            {[
+              { stage: 'Prospecting', pct: 80, color: '#6366F1' },
+              { stage: 'Qualified', pct: 55, color: '#3B82F6' },
+              { stage: 'Proposal Sent', pct: 38, color: '#F59E0B' },
+              { stage: 'Closing', pct: 22, color: 'var(--emerald-500)' },
+            ].map(row => (
+              <div key={row.stage} style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                <div style={{ width: '110px', fontSize: '12px', color: 'rgba(255,255,255,.55)', textAlign: 'right', flexShrink: 0 }}>{row.stage}</div>
+                <div style={{ flex: 1, height: '8px', background: 'rgba(255,255,255,.08)', borderRadius: '4px', overflow: 'hidden' }}>
+                  <div style={{ width: `${row.pct}%`, height: '100%', background: row.color, borderRadius: '4px' }} />
                 </div>
-                <div style={styles.dealRight}>
-                  <span
-                    style={{
-                      fontSize: 11,
-                      fontWeight: "var(--weight-semibold)",
-                      color: deal.stageColor,
-                      backgroundColor: deal.stageBg,
-                      borderRadius: "var(--radius-full)",
-                      padding: "2px 10px",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {deal.stage}
-                  </span>
-                  <span style={styles.dealValue}>{deal.value}</span>
-                  <span style={styles.dealScore}>⚡ {deal.score}</span>
-                </div>
+                <div style={{ width: '36px', fontSize: '12px', color: 'rgba(255,255,255,.45)' }}>{row.pct}%</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* STATS BAR */}
-      <div style={styles.statsBar}>
-        {[
-          { number: "10,000+", label: "Sales Teams" },
-          { number: "$2.4B", label: "Revenue Tracked" },
-          { number: "94%", label: "Customer Satisfaction" },
-        ].map((stat, i) => (
-          <div key={i} style={styles.statItem}>
-            <div style={styles.statNumber}>{stat.number}</div>
-            <div style={styles.statLabel}>{stat.label}</div>
-          </div>
-        ))}
-      </div>
+      {/* ── 3. STATS BAR ──────────────────────────────────────────────────── */}
+      <section style={{ background: 'var(--slate-50)', borderBottom: '1px solid var(--slate-200)' }}>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: 'var(--space-12) var(--space-6)',
+          display: 'flex',
+          justifyContent: 'center',
+          gap: 'var(--space-16)',
+          flexWrap: 'wrap',
+        }}>
+          {[
+            { value: '10,000+', label: 'Sales Teams' },
+            { value: '$2.4B', label: 'Revenue Tracked' },
+            { value: '94%', label: 'Customer Satisfaction' },
+          ].map(stat => (
+            <div key={stat.label} style={{ textAlign: 'center' }}>
+              <div style={{
+                fontFamily: 'var(--font-display)',
+                fontWeight: 'var(--weight-extra)',
+                fontSize: '44px',
+                color: 'var(--navy-900)',
+                lineHeight: '1',
+                letterSpacing: '-1px',
+              }}>{stat.value}</div>
+              <div style={{ fontSize: '15px', color: 'var(--slate-500)', marginTop: '6px', fontWeight: 'var(--weight-medium)' }}>{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
 
-      {/* FEATURES */}
-      <div id="features">
-        <div style={styles.section}>
-          <div style={styles.sectionLabel}>Features</div>
-          <h2 style={styles.sectionTitle}>Everything your team needs to win</h2>
-          <p style={styles.sectionSubtitle}>
-            From first touch to closed-won, AutoPilot CRM handles the heavy lifting so your reps can focus on relationships.
-          </p>
-          <div style={styles.featuresGrid}>
-            {features.map((f, i) => (
-              <div key={i} style={styles.featureCard}>
-                <span style={styles.featureIcon}>{f.icon}</span>
-                <div style={styles.featureTitle}>{f.title}</div>
-                <div style={styles.featureDesc}>{f.desc}</div>
+      {/* ── 4. FEATURES ───────────────────────────────────────────────────── */}
+      <section id="features" style={{ background: 'var(--white)', padding: 'var(--space-16) var(--space-6)' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 'var(--space-12)' }}>
+            <div style={{
+              display: 'inline-block',
+              background: 'var(--emerald-50)',
+              color: 'var(--emerald-700)',
+              borderRadius: 'var(--radius-pill)',
+              padding: '5px 14px',
+              fontSize: '13px',
+              fontWeight: 'var(--weight-semibold)',
+              marginBottom: 'var(--space-5)',
+            }}>Features</div>
+            <h2 style={{
+              fontFamily: 'var(--font-display)',
+              fontWeight: 'var(--weight-bold)',
+              fontSize: 'clamp(28px, 3.5vw, 44px)',
+              color: 'var(--navy-900)',
+              letterSpacing: '-1px',
+              margin: 0,
+            }}>Everything your sales team needs</h2>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+            gap: 'var(--space-6)',
+          }}>
+            {features.map((f) => (
+              <div key={f.title} style={{
+                border: '1px solid var(--slate-200)',
+                borderRadius: 'var(--radius-lg)',
+                padding: 'var(--space-8)',
+                background: 'var(--white)',
+                boxShadow: 'var(--shadow-sm)',
+                transition: 'box-shadow .2s, transform .2s, border-color .2s',
+                cursor: 'default',
+              }}
+                onMouseEnter={e => { e.currentTarget.style.boxShadow = 'var(--shadow-md)'; e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.borderColor = 'var(--emerald-400)'; }}
+                onMouseLeave={e => { e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; e.currentTarget.style.transform = 'none'; e.currentTarget.style.borderColor = 'var(--slate-200)'; }}
+              >
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  background: 'var(--emerald-50)',
+                  borderRadius: 'var(--radius-md)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '24px',
+                  marginBottom: 'var(--space-5)',
+                }}>{f.icon}</div>
+                <h3 style={{
+                  fontFamily: 'var(--font-display)',
+                  fontWeight: 'var(--weight-bold)',
+                  fontSize: '18px',
+                  color: 'var(--navy-900)',
+                  margin: '0 0 8px',
+                }}>{f.title}</h3>
+                <p style={{ fontSize: '15px', color: 'var(--slate-600)', lineHeight: '1.6', margin: 0 }}>{f.desc}</p>
               </div>
             ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* AI DEMO */}
-      <div id="demo" style={styles.aiSection}>
-        <div style={styles.aiInner}>
+      {/* ── 5. AI DEMO ────────────────────────────────────────────────────── */}
+      <section style={{
+        background: 'var(--gradient-navy)',
+        padding: 'var(--space-16) var(--space-6)',
+      }}>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: 'var(--space-16)',
+          alignItems: 'center',
+        }}>
+          {/* Left text */}
           <div>
-            <div style={styles.aiLabelDark}>AI Copilot</div>
-            <h2 style={styles.aiTitle}>Your AI sales assistant, always on</h2>
-            <p style={styles.aiDesc}>
-              Ask AutoPilot anything about your pipeline. It surfaces the right leads at the right time, drafts personalized outreach, and flags deals at risk — all in plain English.
+            <div style={{
+              display: 'inline-block',
+              background: 'rgba(16,185,129,.15)',
+              border: '1px solid rgba(16,185,129,.3)',
+              color: 'var(--emerald-400)',
+              borderRadius: 'var(--radius-pill)',
+              padding: '5px 14px',
+              fontSize: '13px',
+              fontWeight: 'var(--weight-semibold)',
+              marginBottom: 'var(--space-5)',
+            }}>AI Copilot</div>
+            <h2 style={{
+              fontFamily: 'var(--font-display)',
+              fontWeight: 'var(--weight-bold)',
+              fontSize: 'clamp(28px, 3.5vw, 42px)',
+              color: 'var(--white)',
+              letterSpacing: '-1px',
+              margin: '0 0 var(--space-5)',
+              lineHeight: '1.15',
+            }}>Meet your AI Sales Copilot</h2>
+            <p style={{ fontSize: '16px', color: 'rgba(255,255,255,.65)', lineHeight: '1.7', marginBottom: 'var(--space-8)' }}>
+              Your AI Copilot works 24/7 to surface the deals most likely to close, draft the perfect follow-up, and flag risks before they cost you revenue.
             </p>
-            <ul style={styles.aiFeatureList}>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '14px' }}>
               {[
-                "Understands context across your entire pipeline",
-                "Drafts follow-up emails in your voice",
-                "Flags deals that have gone cold",
-                "Summarizes call transcripts and action items",
-              ].map((item, i) => (
-                <li key={i} style={styles.aiFeatureItem}>
-                  <div style={styles.aiFeatureDot} />
+                'Prioritizes your pipeline by AI-predicted close probability',
+                'Drafts personalized outreach in seconds',
+                'Alerts you when a deal goes silent',
+                'Answers pipeline questions in plain English',
+              ].map(item => (
+                <li key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontSize: '15px', color: 'rgba(255,255,255,.75)' }}>
+                  <span style={{ color: 'var(--emerald-400)', fontWeight: 'var(--weight-bold)', flexShrink: 0, marginTop: '1px' }}>✓</span>
                   {item}
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Chat Preview */}
-          <div style={styles.chatCard}>
-            <div style={styles.chatHeader}>
-              <div style={styles.chatHeaderIcon}>🤖</div>
-              <div style={styles.chatHeaderText}>
-                <div style={styles.chatHeaderName}>AutoPilot AI</div>
-                <div style={styles.chatHeaderStatus}>
-                  <span
-                    style={{
-                      width: 7,
-                      height: 7,
-                      borderRadius: "50%",
-                      backgroundColor: "#10b981",
-                      display: "inline-block",
-                    }}
-                  />
-                  Online — analyzing your pipeline
+          {/* Right: Chat mockup */}
+          <div style={{
+            background: 'rgba(255,255,255,.05)',
+            border: '1px solid rgba(255,255,255,.1)',
+            borderRadius: 'var(--radius-xl)',
+            overflow: 'hidden',
+            boxShadow: '0 24px 60px rgba(0,0,0,.4)',
+          }}>
+            {/* Chat header */}
+            <div style={{
+              background: 'rgba(255,255,255,.08)',
+              borderBottom: '1px solid rgba(255,255,255,.08)',
+              padding: '14px 20px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+            }}>
+              <div style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: 'var(--gradient-emerald)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '14px',
+              }}>✦</div>
+              <div>
+                <div style={{ fontSize: '14px', fontWeight: 'var(--weight-semibold)', color: 'var(--white)' }}>AutoPilot AI</div>
+                <div style={{ fontSize: '11px', color: 'var(--emerald-400)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--emerald-400)', display: 'inline-block' }} />
+                  Online
                 </div>
               </div>
             </div>
-            <div style={styles.chatBody}>
-              <div style={styles.chatMsgUser}>
-                <div style={styles.chatBubbleUser}>
-                  Which leads should I focus on today?
+
+            {/* Messages */}
+            <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {/* User message */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <div style={{
+                  background: 'var(--gradient-emerald)',
+                  color: 'var(--white)',
+                  borderRadius: '16px 16px 4px 16px',
+                  padding: '11px 16px',
+                  fontSize: '14px',
+                  maxWidth: '80%',
+                  lineHeight: '1.5',
+                }}>Which leads should I focus on today?</div>
+              </div>
+
+              {/* AI message */}
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                <div style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '50%',
+                  background: 'var(--gradient-emerald)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '12px',
+                  flexShrink: 0,
+                }}>✦</div>
+                <div style={{
+                  background: 'rgba(255,255,255,.08)',
+                  border: '1px solid rgba(255,255,255,.1)',
+                  color: 'rgba(255,255,255,.88)',
+                  borderRadius: '4px 16px 16px 16px',
+                  padding: '12px 16px',
+                  fontSize: '14px',
+                  maxWidth: '88%',
+                  lineHeight: '1.6',
+                }}>
+                  Your top 3 leads to contact today:<br /><br />
+                  🔥 <strong style={{ color: 'var(--white)' }}>Acme Corp</strong> — Score 94. Opened your proposal 4× yesterday. Strike now.<br />
+                  📈 <strong style={{ color: 'var(--white)' }}>FinEdge Ltd</strong> — Score 87. Trial expires in 2 days. Upsell window is open.<br />
+                  ⚡ <strong style={{ color: 'var(--white)' }}>Nexgen AI</strong> — Score 82. CEO visited pricing page twice this week.
                 </div>
               </div>
-              <div style={styles.chatMsgAi}>
-                <div style={styles.chatBubbleAi}>
-                  Based on engagement signals from the last 24 hours, here are your top 3 leads to prioritize:
-                  <div style={styles.chatLeadItem}>
-                    <span>🎯</span>
-                    <span>Alex Chen — Stripe Inc. (visited pricing page 3×)</span>
-                    <span style={styles.chatLeadScore}>94</span>
+
+              {/* User follow-up */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <div style={{
+                  background: 'var(--gradient-emerald)',
+                  color: 'var(--white)',
+                  borderRadius: '16px 16px 4px 16px',
+                  padding: '11px 16px',
+                  fontSize: '14px',
+                  maxWidth: '80%',
+                  lineHeight: '1.5',
+                }}>Draft a follow-up email for Acme Corp</div>
+              </div>
+
+              {/* AI response */}
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                <div style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '50%',
+                  background: 'var(--gradient-emerald)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '12px',
+                  flexShrink: 0,
+                }}>✦</div>
+                <div style={{
+                  background: 'rgba(255,255,255,.08)',
+                  border: '1px solid rgba(255,255,255,.1)',
+                  color: 'rgba(255,255,255,.88)',
+                  borderRadius: '4px 16px 16px 16px',
+                  padding: '12px 16px',
+                  fontSize: '14px',
+                  maxWidth: '88%',
+                  lineHeight: '1.6',
+                }}>
+                  <em style={{ color: 'rgba(255,255,255,.5)', fontSize: '12px' }}>Subject: Quick question about your review</em><br /><br />
+                  Hi Sarah, I noticed your team has been reviewing our proposal — happy to answer any questions or arrange a quick call to walk you through the ROI numbers specific to your use case. What time works best this week?
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                    {['Send', 'Edit', 'Regenerate'].map(a => (
+                      <button key={a} style={{
+                        background: 'rgba(16,185,129,.2)',
+                        border: '1px solid rgba(16,185,129,.3)',
+                        color: 'var(--emerald-400)',
+                        borderRadius: 'var(--radius-sm)',
+                        padding: '4px 10px',
+                        fontSize: '12px',
+                        cursor: 'pointer',
+                        fontWeight: 'var(--weight-medium)',
+                      }}>{a}</button>
+                    ))}
                   </div>
-                  <div style={styles.chatLeadItem}>
-                    <span>🔥</span>
-                    <span>Sarah Miller — Notion Labs (opened proposal twice)</span>
-                    <span style={styles.chatLeadScore}>87</span>
-                  </div>
-                  <div style={styles.chatLeadItem}>
-                    <span>⚡</span>
-                    <span>Jake Rivera — Linear HQ (booked a demo)</span>
-                    <span style={styles.chatLeadScore}>76</span>
-                  </div>
                 </div>
               </div>
-              <div style={styles.chatMsgUser}>
-                <div style={styles.chatBubbleUser}>
-                  Draft a follow-up email for Alex Chen.
-                </div>
-              </div>
-              <div style={styles.chatMsgAi}>
-                <div style={styles.chatBubbleAi}>
-                  Sure! Here's a personalized follow-up based on Alex's activity and the enterprise tier he explored:
-                  <br /><br />
-                  <em>Subject: Quick question about your Stripe team's workflow</em>
-                  <br /><br />
-                  "Hi Alex, noticed you spent some time on our enterprise pricing — happy to walk you through a custom quote for Stripe's team size. Would Thursday at 2pm PT work for a 20-min call?"
-                </div>
-              </div>
-            </div>
-            <div style={styles.chatInput}>
-              <input
-                style={styles.chatInputField}
-                placeholder="Ask AutoPilot anything..."
-                readOnly
-              />
-              <button style={styles.chatSendBtn}>↑</button>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* PRICING */}
-      <div id="pricing" style={styles.pricingSection}>
-        <div style={styles.pricingInner}>
-          <div style={{ textAlign: "center", marginBottom: "var(--space-12)" }}>
-            <div style={{ ...styles.sectionLabel, textAlign: "center" }}>Pricing</div>
-            <h2 style={{ ...styles.sectionTitle, textAlign: "center", margin: "0 auto var(--space-4)" }}>
-              Simple, transparent pricing
-            </h2>
-            <p style={{ ...styles.sectionSubtitle, textAlign: "center", margin: "0 auto" }}>
-              Start free. Upgrade when you're ready. No hidden fees, ever.
-            </p>
+      {/* ── 6. PRICING ────────────────────────────────────────────────────── */}
+      <section id="pricing" style={{ background: 'var(--slate-50)', padding: 'var(--space-16) var(--space-6)' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 'var(--space-12)' }}>
+            <div style={{
+              display: 'inline-block',
+              background: 'var(--emerald-50)',
+              color: 'var(--emerald-700)',
+              borderRadius: 'var(--radius-pill)',
+              padding: '5px 14px',
+              fontSize: '13px',
+              fontWeight: 'var(--weight-semibold)',
+              marginBottom: 'var(--space-5)',
+            }}>Pricing</div>
+            <h2 style={{
+              fontFamily: 'var(--font-display)',
+              fontWeight: 'var(--weight-bold)',
+              fontSize: 'clamp(28px, 3.5vw, 44px)',
+              color: 'var(--navy-900)',
+              letterSpacing: '-1px',
+              margin: 0,
+            }}>Simple, transparent pricing</h2>
           </div>
-          <div style={styles.pricingGrid}>
-            {pricingTiers.map((tier, i) => (
-              <div
-                key={i}
-                style={{
-                  backgroundColor: "var(--white)",
-                  borderRadius: "var(--radius-xl)",
-                  padding: "var(--space-8)",
-                  border: tier.highlighted
-                    ? "2px solid var(--emerald-500)"
-                    : "1px solid var(--slate-200)",
-                  boxShadow: tier.highlighted ? "var(--shadow-xl)" : "var(--shadow-md)",
-                  position: "relative",
-                  transform: tier.highlighted ? "scale(1.03)" : "none",
-                }}
-              >
-                {tier.badge && (
-                  <div style={styles.pricingBadge}>{tier.badge}</div>
-                )}
-                <div style={styles.pricingTier}>{tier.tier}</div>
-                <div style={styles.pricingPrice}>
-                  <span style={styles.pricingAmount}>{tier.amount}</span>
-                  {tier.per && <span style={styles.pricingPer}>{tier.per}</span>}
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: 'var(--space-6)',
+            alignItems: 'stretch',
+          }}>
+            {/* Starter */}
+            <div style={{
+              background: 'var(--white)',
+              border: '1px solid var(--slate-200)',
+              borderRadius: 'var(--radius-xl)',
+              padding: 'var(--space-8)',
+              display: 'flex',
+              flexDirection: 'column',
+              boxShadow: 'var(--shadow-sm)',
+            }}>
+              <div style={{ marginBottom: 'var(--space-8)' }}>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 'var(--weight-bold)', fontSize: '20px', color: 'var(--navy-900)', margin: '0 0 8px' }}>Starter</h3>
+                <p style={{ fontSize: '14px', color: 'var(--slate-500)', margin: '0 0 var(--space-6)' }}>Perfect for small teams getting started</p>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                  <span style={{ fontFamily: 'var(--font-display)', fontWeight: 'var(--weight-extra)', fontSize: '48px', color: 'var(--navy-900)', letterSpacing: '-2px' }}>$49</span>
+                  <span style={{ fontSize: '15px', color: 'var(--slate-500)' }}>/month</span>
                 </div>
-                <div style={styles.pricingDesc}>{tier.desc}</div>
-                <ul style={styles.pricingFeatures}>
-                  {tier.features.map((f, j) => (
-                    <li key={j} style={styles.pricingFeatureItem}>
-                      <span style={styles.pricingCheck}>✓</span>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
+              </div>
+              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 var(--space-8)', flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {['Up to 5 users', 'AI lead scoring', '1,000 contacts', 'Email integration', 'Basic analytics', 'Email support'].map(f => (
+                  <li key={f} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '15px', color: 'var(--slate-700)' }}>
+                    <span style={{ color: 'var(--emerald-600)', fontWeight: 'var(--weight-bold)' }}>✓</span>{f}
+                  </li>
+                ))}
+              </ul>
+              <button style={{
+                ...btnBase,
+                width: '100%',
+                padding: '13px',
+                border: '1.5px solid var(--emerald-500)',
+                color: 'var(--emerald-600)',
+                background: 'var(--white)',
+                borderRadius: 'var(--radius-md)',
+              }} onClick={onLaunchApp}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--emerald-50)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'var(--white)'; }}
+              >Get Started</button>
+            </div>
+
+            {/* Professional (highlighted) */}
+            <div style={{
+              background: 'var(--navy-900)',
+              border: '2px solid var(--emerald-500)',
+              borderRadius: 'var(--radius-xl)',
+              padding: 'var(--space-8)',
+              display: 'flex',
+              flexDirection: 'column',
+              boxShadow: '0 20px 60px rgba(5,150,105,.22)',
+              position: 'relative',
+            }}>
+              {/* Badge */}
+              <div style={{
+                position: 'absolute',
+                top: '-14px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: 'var(--gradient-emerald)',
+                color: 'var(--white)',
+                borderRadius: 'var(--radius-pill)',
+                padding: '4px 16px',
+                fontSize: '12px',
+                fontWeight: 'var(--weight-bold)',
+                letterSpacing: '.4px',
+                whiteSpace: 'nowrap',
+              }}>★ Most Popular</div>
+              <div style={{ marginBottom: 'var(--space-8)' }}>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 'var(--weight-bold)', fontSize: '20px', color: 'var(--white)', margin: '0 0 8px' }}>Professional</h3>
+                <p style={{ fontSize: '14px', color: 'rgba(255,255,255,.55)', margin: '0 0 var(--space-6)' }}>For growing sales teams that need everything</p>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                  <span style={{ fontFamily: 'var(--font-display)', fontWeight: 'var(--weight-extra)', fontSize: '48px', color: 'var(--white)', letterSpacing: '-2px' }}>$99</span>
+                  <span style={{ fontSize: '15px', color: 'rgba(255,255,255,.5)' }}>/month</span>
+                </div>
+              </div>
+              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 var(--space-8)', flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {['Up to 25 users', 'Advanced AI scoring', 'Unlimited contacts', 'Email automation', 'Pipeline analytics', 'Forecasting', 'Integrations (100+)', 'Priority support'].map(f => (
+                  <li key={f} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '15px', color: 'rgba(255,255,255,.82)' }}>
+                    <span style={{ color: 'var(--emerald-400)', fontWeight: 'var(--weight-bold)' }}>✓</span>{f}
+                  </li>
+                ))}
+              </ul>
+              <button style={{
+                ...btnBase,
+                width: '100%',
+                padding: '13px',
+                background: 'var(--gradient-emerald)',
+                color: 'var(--white)',
+                borderRadius: 'var(--radius-md)',
+                boxShadow: '0 4px 16px rgba(5,150,105,.4)',
+              }} onClick={onLaunchApp}
+                onMouseEnter={e => e.currentTarget.style.opacity = '.88'}
+                onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+              >Get Started</button>
+            </div>
+
+            {/* Enterprise */}
+            <div style={{
+              background: 'var(--white)',
+              border: '1px solid var(--slate-200)',
+              borderRadius: 'var(--radius-xl)',
+              padding: 'var(--space-8)',
+              display: 'flex',
+              flexDirection: 'column',
+              boxShadow: 'var(--shadow-sm)',
+            }}>
+              <div style={{ marginBottom: 'var(--space-8)' }}>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 'var(--weight-bold)', fontSize: '20px', color: 'var(--navy-900)', margin: '0 0 8px' }}>Enterprise</h3>
+                <p style={{ fontSize: '14px', color: 'var(--slate-500)', margin: '0 0 var(--space-6)' }}>For large organizations with custom needs</p>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                  <span style={{ fontFamily: 'var(--font-display)', fontWeight: 'var(--weight-extra)', fontSize: '42px', color: 'var(--navy-900)', letterSpacing: '-2px' }}>Custom</span>
+                </div>
+              </div>
+              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 var(--space-8)', flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {['Unlimited users', 'Custom AI models', 'Dedicated onboarding', 'SLA guarantees', 'SSO & SAML', 'Custom integrations', 'Audit logs', 'Dedicated CSM'].map(f => (
+                  <li key={f} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '15px', color: 'var(--slate-700)' }}>
+                    <span style={{ color: 'var(--emerald-600)', fontWeight: 'var(--weight-bold)' }}>✓</span>{f}
+                  </li>
+                ))}
+              </ul>
+              <button style={{
+                ...btnBase,
+                width: '100%',
+                padding: '13px',
+                border: '1.5px solid var(--navy-800)',
+                color: 'var(--navy-900)',
+                background: 'var(--white)',
+                borderRadius: 'var(--radius-md)',
+              }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--navy-50)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'var(--white)'; }}
+              >Contact Sales</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 7. FAQ ────────────────────────────────────────────────────────── */}
+      <section style={{ background: 'var(--white)', padding: 'var(--space-16) var(--space-6)' }}>
+        <div style={{ maxWidth: '760px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 'var(--space-12)' }}>
+            <h2 style={{
+              fontFamily: 'var(--font-display)',
+              fontWeight: 'var(--weight-bold)',
+              fontSize: 'clamp(28px, 3.5vw, 42px)',
+              color: 'var(--navy-900)',
+              letterSpacing: '-1px',
+              margin: 0,
+            }}>Frequently asked questions</h2>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {faqs.map((faq, i) => (
+              <div key={i} style={{
+                border: '1px solid var(--slate-200)',
+                borderRadius: 'var(--radius-lg)',
+                overflow: 'hidden',
+                boxShadow: faqOpen === i ? 'var(--shadow-sm)' : 'none',
+              }}>
                 <button
+                  onClick={() => toggleFaq(i)}
                   style={{
-                    width: "100%",
-                    padding: "var(--space-4)",
-                    borderRadius: "var(--radius-lg)",
-                    border: tier.highlighted ? "none" : "1.5px solid var(--slate-300)",
-                    backgroundColor: tier.highlighted ? "var(--emerald-600)" : "transparent",
-                    color: tier.highlighted ? "var(--white)" : "var(--navy-900)",
-                    fontSize: 15,
-                    fontWeight: "var(--weight-semibold)",
-                    cursor: "pointer",
-                    fontFamily: "var(--font-body)",
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: 'var(--space-6)',
+                    background: faqOpen === i ? 'var(--slate-50)' : 'var(--white)',
+                    border: 'none',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    gap: 'var(--space-4)',
                   }}
-                  onClick={tier.ctaAction ? onLaunchApp : undefined}
                 >
-                  {tier.cta}
+                  <span style={{ fontWeight: 'var(--weight-semibold)', fontSize: '16px', color: 'var(--navy-900)' }}>{faq.q}</span>
+                  <span style={{
+                    flexShrink: 0,
+                    width: '22px',
+                    height: '22px',
+                    borderRadius: '50%',
+                    background: faqOpen === i ? 'var(--emerald-600)' : 'var(--slate-100)',
+                    color: faqOpen === i ? 'var(--white)' : 'var(--slate-600)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '16px',
+                    fontWeight: 'var(--weight-bold)',
+                    lineHeight: 1,
+                  }}>
+                    {faqOpen === i ? '−' : '+'}
+                  </span>
                 </button>
+                {faqOpen === i && (
+                  <div style={{
+                    padding: 'var(--space-5) var(--space-6) var(--space-6)',
+                    background: 'var(--slate-50)',
+                    fontSize: '15px',
+                    color: 'var(--slate-600)',
+                    lineHeight: '1.7',
+                    borderTop: '1px solid var(--slate-200)',
+                  }}>
+                    {faq.a}
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* FAQ */}
-      <div style={{ backgroundColor: "var(--white)" }}>
-        <div style={styles.faqSection}>
-          <div style={{ textAlign: "center", marginBottom: "var(--space-10)" }}>
-            <div style={{ ...styles.sectionLabel, textAlign: "center" }}>FAQ</div>
-            <h2 style={{ ...styles.sectionTitle, textAlign: "center", margin: "0 auto var(--space-3)" }}>
-              Common questions
-            </h2>
-            <p style={{ ...styles.sectionSubtitle, textAlign: "center", margin: "0 auto" }}>
-              Everything you need to know about AutoPilot CRM.
-            </p>
-          </div>
-          {faqs.map((faq, i) => (
-            <div key={i} style={styles.faqItem}>
-              <button
-                style={{
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "var(--space-5) var(--space-6)",
-                  backgroundColor: openFaq === i ? "var(--slate-100)" : "var(--white)",
-                  border: "none",
-                  cursor: "pointer",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  fontSize: 16,
-                  fontWeight: "var(--weight-semibold)",
-                  color: "var(--navy-900)",
-                  fontFamily: "var(--font-body)",
-                }}
-                onClick={() => toggleFaq(i)}
-              >
-                <span>{faq.q}</span>
-                <span
-                  style={{
-                    fontSize: 20,
-                    color: "var(--emerald-600)",
-                    transform: openFaq === i ? "rotate(45deg)" : "rotate(0deg)",
-                    transition: "transform 0.2s",
-                    flexShrink: 0,
-                    display: "inline-block",
-                  }}
-                >
-                  +
-                </span>
-              </button>
-              {openFaq === i && (
-                <div style={styles.faqAnswer}>{faq.a}</div>
-              )}
-            </div>
-          ))}
+      {/* ── 8. CTA BANNER ─────────────────────────────────────────────────── */}
+      <section style={{
+        background: 'var(--gradient-emerald)',
+        padding: 'var(--space-16) var(--space-6)',
+        textAlign: 'center',
+      }}>
+        <div style={{ maxWidth: '720px', margin: '0 auto' }}>
+          <h2 style={{
+            fontFamily: 'var(--font-display)',
+            fontWeight: 'var(--weight-extra)',
+            fontSize: 'clamp(30px, 4vw, 50px)',
+            color: 'var(--white)',
+            letterSpacing: '-1.5px',
+            margin: '0 0 var(--space-5)',
+            lineHeight: '1.1',
+          }}>Ready to 10x your sales team's performance?</h2>
+          <p style={{ fontSize: '18px', color: 'rgba(255,255,255,.82)', margin: '0 0 var(--space-10)', lineHeight: '1.6' }}>
+            Join 10,000+ sales teams already using AutoPilot CRM to close more deals, faster. Get started in minutes — no credit card required.
+          </p>
+          <button style={{
+            ...btnBase,
+            background: 'var(--white)',
+            color: 'var(--emerald-700)',
+            padding: '16px 36px',
+            fontSize: '17px',
+            boxShadow: '0 8px 30px rgba(0,0,0,.18)',
+            fontWeight: 'var(--weight-bold)',
+          }} onClick={onLaunchApp}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,.24)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,.18)'; }}
+          >Start Free Trial →</button>
         </div>
-      </div>
+      </section>
 
-      {/* FOOTER */}
-      <footer style={styles.footer}>
-        <div style={styles.footerInner}>
-          <div style={styles.footerTop}>
-            <div style={styles.footerBrand}>
-              <div style={styles.footerLogoRow}>
-                <div style={styles.footerLogoIcon}>🚀</div>
-                <span style={styles.footerLogoText}>AutoPilot CRM</span>
+      {/* ── 9. FOOTER ─────────────────────────────────────────────────────── */}
+      <footer style={{ background: 'var(--navy-900)', padding: 'var(--space-16) var(--space-6) var(--space-8)' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+            gap: 'var(--space-10)',
+            marginBottom: 'var(--space-12)',
+          }}>
+            {/* Brand */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: 'var(--space-4)' }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: 'var(--radius-md)',
+                  background: 'var(--gradient-emerald)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '15px',
+                }}>✦</div>
+                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 'var(--weight-bold)', fontSize: '16px', color: 'var(--white)' }}>AutoPilot CRM</span>
               </div>
-              <p style={styles.footerTagline}>
-                The AI-powered CRM that helps modern sales teams close more deals, faster.
+              <p style={{ fontSize: '14px', color: 'rgba(255,255,255,.42)', lineHeight: '1.65', margin: 0 }}>
+                The AI-powered CRM built for modern sales teams who want to close faster.
               </p>
             </div>
-            <div style={styles.footerLinks}>
-              {[
-                {
-                  title: "Product",
-                  links: ["Features", "Pricing", "Changelog", "Roadmap"],
-                },
-                {
-                  title: "Company",
-                  links: ["About", "Blog", "Careers", "Press"],
-                },
-                {
-                  title: "Legal",
-                  links: ["Privacy Policy", "Terms of Service", "Security", "GDPR"],
-                },
-              ].map((group, i) => (
-                <div key={i}>
-                  <div style={styles.footerLinkGroupTitle}>{group.title}</div>
-                  <ul style={styles.footerLinkList}>
-                    {group.links.map((link, j) => (
-                      <li key={j}>
-                        <a style={styles.footerLink} href="#">{link}</a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
+
+            {/* Link columns */}
+            {[
+              { heading: 'Product', links: ['Features', 'Pricing', 'Integrations', 'Changelog', 'Roadmap'] },
+              { heading: 'Company', links: ['About', 'Blog', 'Careers', 'Press', 'Contact'] },
+              { heading: 'Resources', links: ['Documentation', 'API Reference', 'Help Center', 'Community', 'Webinars'] },
+              { heading: 'Legal', links: ['Privacy Policy', 'Terms of Service', 'Cookie Policy', 'GDPR', 'Security'] },
+            ].map(col => (
+              <div key={col.heading}>
+                <h4 style={{ fontWeight: 'var(--weight-semibold)', fontSize: '13px', color: 'rgba(255,255,255,.9)', letterSpacing: '.5px', textTransform: 'uppercase', margin: '0 0 var(--space-5)' }}>{col.heading}</h4>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {col.links.map(link => (
+                    <li key={link}>
+                      <span style={{ fontSize: '14px', color: 'rgba(255,255,255,.42)', cursor: 'pointer' }}
+                        onMouseEnter={e => e.target.style.color = 'rgba(255,255,255,.8)'}
+                        onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,.42)'}
+                      >{link}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-          <div style={styles.footerBottom}>
-            <span style={styles.footerCopy}>© 2024 AutoPilot CRM. All rights reserved.</span>
-            <div style={styles.footerLegal}>
-              <a style={styles.footerLink} href="#">Privacy</a>
-              <a style={styles.footerLink} href="#">Terms</a>
-              <a style={styles.footerLink} href="#">Cookies</a>
+
+          {/* Bottom bar */}
+          <div style={{
+            borderTop: '1px solid rgba(255,255,255,.08)',
+            paddingTop: 'var(--space-8)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 'var(--space-4)',
+          }}>
+            <span style={{ fontSize: '13px', color: 'rgba(255,255,255,.3)' }}>© 2026 AutoPilot CRM. All rights reserved.</span>
+            <div style={{ display: 'flex', gap: 'var(--space-6)' }}>
+              {['Twitter', 'LinkedIn', 'GitHub'].map(social => (
+                <span key={social} style={{ fontSize: '13px', color: 'rgba(255,255,255,.3)', cursor: 'pointer' }}
+                  onMouseEnter={e => e.target.style.color = 'rgba(255,255,255,.7)'}
+                  onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,.3)'}
+                >{social}</span>
+              ))}
             </div>
           </div>
         </div>
       </footer>
+
     </div>
   );
 }

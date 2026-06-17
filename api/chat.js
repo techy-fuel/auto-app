@@ -51,17 +51,35 @@ ${(inventory || []).map(v => `  • ${v.make} ${v.model} — AED ${v.price} — 
 
 Answer concisely and helpfully. Use markdown formatting for lists and tables. Focus on actionable sales advice for UAE market.`;
 
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured in environment variables' });
+  }
+
+  // Anthropic requires messages to alternate user/assistant starting with user
+  // Filter and normalize roles
+  const normalized = messages
+    .map(m => ({ role: m.role === 'ai' ? 'assistant' : 'user', content: m.content }))
+    .filter((m, i, arr) => {
+      // Remove consecutive same roles, keep last
+      if (i === 0) return m.role === 'user';
+      return m.role !== arr[i - 1].role;
+    });
+
+  if (normalized.length === 0 || normalized[normalized.length - 1].role !== 'user') {
+    return res.status(400).json({ error: 'Last message must be from user' });
+  }
+
   try {
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const response = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 1024,
       system: crmContext,
-      messages: messages.map(m => ({ role: m.role === 'ai' ? 'assistant' : 'user', content: m.content })),
+      messages: normalized,
     });
     return res.status(200).json({ content: response.content[0].text });
   } catch (e) {
-    console.error('Anthropic error:', e);
-    return res.status(500).json({ error: 'AI service error' });
+    console.error('Anthropic error:', e.message);
+    return res.status(500).json({ error: `AI error: ${e.message}` });
   }
 }

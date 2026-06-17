@@ -167,7 +167,7 @@ export function Copilot({ user }) {
         body: JSON.stringify({ messages: newMessages.filter(m => m.role !== 'ai' || m !== initialMessages[0]).slice(-10) }),
       });
       const data = await res.json();
-      const reply = data.content || data.error || 'Sorry, I could not get a response.';
+      const reply = data.content || `Error: ${data.error || 'Could not get a response.'}`;
       setMessages(prev => [...prev, { role: 'ai', content: reply, time: now }]);
     } catch {
       setMessages(prev => [...prev, { role: 'ai', content: 'Connection error. Please try again.', time: now }]);

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { useUser } from '@clerk/clerk-react';
+import { db } from '../lib/supabase';
 import { Badge } from '../components/core/Badge';
 import { Avatar } from '../components/core/Avatar';
 import { Button } from '../components/core/Button';
@@ -76,17 +77,19 @@ function DealCard({ deal, onMove, onDelete }) {
 }
 
 export function Pipeline() {
+  const { user } = useUser();
   const [deals, setDeals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => { fetchDeals(); }, []);
+  useEffect(() => { fetchDeals(); }, [user?.id]);
 
   async function fetchDeals() {
     setLoading(true);
-    const { data } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
+    const d = db(user?.id);
+    const { data } = await d.leads.select('*').order('created_at', { ascending: false });
     setDeals(data || []);
     setLoading(false);
   }
@@ -94,7 +97,8 @@ export function Pipeline() {
   async function addDeal() {
     if (!form.name.trim()) return;
     setSaving(true);
-    await supabase.from('leads').insert([{ ...form, value: parseFloat(form.value) || 0, score: parseInt(form.score) || 50 }]);
+    const d = db(user?.id);
+    await d.leads.insert([{ ...form, value: parseFloat(form.value) || 0, score: parseInt(form.score) || 50 }]);
     setSaving(false);
     setShowForm(false);
     setForm(emptyForm);
@@ -102,12 +106,14 @@ export function Pipeline() {
   }
 
   async function moveDeal(id, stage) {
-    await supabase.from('leads').update({ status: stage }).eq('id', id);
+    const d = db(user?.id);
+    await d.leads.update({ status: stage }, id);
     fetchDeals();
   }
 
   async function deleteDeal(id) {
-    await supabase.from('leads').delete().eq('id', id);
+    const d = db(user?.id);
+    await d.leads.delete(id);
     fetchDeals();
   }
 

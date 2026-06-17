@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
-import { supabase } from '../lib/supabase';
+import { db } from '../lib/supabase';
 
 const avatarColors = ['#0A2540', '#059669', '#2563EB', '#7C3AED', '#D97706'];
 
@@ -307,11 +307,12 @@ export function MobileApp() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.from('leads').select('*').order('score', { ascending: false }).then(({ data }) => {
+    const d = db(user?.id);
+    d.leads.select('*').order('score', { ascending: false }).then(({ data }) => {
       setLeads(data || []);
       setLoading(false);
     });
-  }, []);
+  }, [user?.id]);
 
   function handleSelectLead(lead) { setSelectedLead(lead); setScreen('leadDetail'); }
   function handleNav(id) {

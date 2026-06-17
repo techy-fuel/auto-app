@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { supabase } from '../lib/supabase';
+import { useUser } from '@clerk/clerk-react';
+import { db } from '../lib/supabase';
 import { Button } from '../components/core/Button';
 import { Input } from '../components/forms/Input';
 import { StatCard } from '../components/data/StatCard';
@@ -32,6 +33,7 @@ function parseCSV(text) {
 }
 
 export function Inventory() {
+  const { user } = useUser();
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
@@ -43,11 +45,12 @@ export function Inventory() {
   const [uploadStatus, setUploadStatus] = useState(''); // 'uploading' | 'done' | 'error'
   const fileRef = useRef();
 
-  useEffect(() => { fetchVehicles(); }, []);
+  useEffect(() => { fetchVehicles(); }, [user?.id]);
 
   async function fetchVehicles() {
     setLoading(true);
-    const { data, error } = await supabase.from('inventory').select('*').order('created_at', { ascending: false });
+    const d = db(user?.id);
+    const { data, error } = await d.inventory.select('*').order('created_at', { ascending: false });
     if (!error) setVehicles(data || []);
     setLoading(false);
   }
@@ -55,7 +58,8 @@ export function Inventory() {
   async function addVehicle() {
     if (!form.make.trim() || !form.model.trim()) { setError('Make and Model are required'); return; }
     setSaving(true); setError('');
-    const { error } = await supabase.from('inventory').insert([{
+    const d = db(user?.id);
+    const { error } = await d.inventory.insert([{
       ...form,
       year: parseInt(form.year) || new Date().getFullYear(),
       mileage: parseInt(form.mileage) || 0,
@@ -68,17 +72,20 @@ export function Inventory() {
 
   async function duplicateVehicle(v) {
     const { id, created_at, ...rest } = v;
-    await supabase.from('inventory').insert([{ ...rest, status: 'Available', vin: '' }]);
+    const d = db(user?.id);
+    await d.inventory.insert([{ ...rest, status: 'Available', vin: '' }]);
     fetchVehicles();
   }
 
   async function deleteVehicle(id) {
-    await supabase.from('inventory').delete().eq('id', id);
+    const d = db(user?.id);
+    await d.inventory.delete(id);
     fetchVehicles();
   }
 
   async function updateStatus(id, status) {
-    await supabase.from('inventory').update({ status }).eq('id', id);
+    const d = db(user?.id);
+    await d.inventory.update({ status }, id);
     fetchVehicles();
   }
 
@@ -89,7 +96,8 @@ export function Inventory() {
     const text = await file.text();
     const rows = parseCSV(text);
     if (rows.length === 0) { setUploadStatus('error'); return; }
-    const { error } = await supabase.from('inventory').insert(rows);
+    const d = db(user?.id);
+    const { error } = await d.inventory.insert(rows);
     if (error) { setUploadStatus('error'); return; }
     setUploadStatus('done');
     fetchVehicles();

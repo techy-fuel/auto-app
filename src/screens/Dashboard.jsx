@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { useUser } from '@clerk/clerk-react';
+import { db } from '../lib/supabase';
 import { AiInsight } from '../components/data/AiInsight';
 import { Button } from '../components/core/Button';
 import { ProgressRing } from '../components/data/ProgressRing';
@@ -36,18 +37,20 @@ function SalesChart({ data }) {
 }
 
 export function Dashboard() {
+  const { user } = useUser();
   const [stats, setStats] = useState({ vehicles: 0, leads: 0, available: 0, sold: 0, stockValue: 0 });
   const [topVehicles, setTopVehicles] = useState([]);
   const [funnelData, setFunnelData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => { fetchData(); }, [user?.id]);
 
   async function fetchData() {
     setLoading(true);
+    const d = db(user?.id);
     const [{ data: vehicles }, { data: leads }] = await Promise.all([
-      supabase.from('inventory').select('*'),
-      supabase.from('leads').select('*'),
+      d.inventory.select('*'),
+      d.leads.select('*'),
     ]);
 
     const v = vehicles || [];

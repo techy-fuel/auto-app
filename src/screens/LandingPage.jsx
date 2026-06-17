@@ -138,6 +138,7 @@ export function LandingPage({ onLaunchApp, onSignUp }) {
           </div>
 
           {/* Center nav */}
+          {!isMobile && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-8)' }}>
             {['Features', 'Pricing', 'About'].map((label) => (
               <a key={label} href={`#${label.toLowerCase()}`} style={{
@@ -152,6 +153,7 @@ export function LandingPage({ onLaunchApp, onSignUp }) {
               >{label}</a>
             ))}
           </div>
+          )}
 
           {/* Right CTAs */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
@@ -274,7 +276,7 @@ export function LandingPage({ onLaunchApp, onSignUp }) {
           </div>
 
           {/* Stat row */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '14px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: '12px', marginBottom: '14px' }}>
             {[
               { label: 'Open Deals', value: '142', color: 'var(--emerald-600)' },
               { label: 'Revenue (MTD)', value: '$284K', color: '#3B82F6' },
@@ -856,7 +858,7 @@ export function LandingPage({ onLaunchApp, onSignUp }) {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 'var(--space-5)', marginBottom: 'var(--space-12)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, minmax(0, 1fr))', gap: 'var(--space-5)', marginBottom: 'var(--space-12)' }}>
             {[
               { icon: '🇦🇪', title: 'UAE-First', desc: 'Built for the UAE market — AED pricing, local workflows, and regional AI insights.' },
               { icon: '🔒', title: 'Secure by Default', desc: "Every dealership's data is isolated. Multi-tenant architecture with encryption at rest." },

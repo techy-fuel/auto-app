@@ -1,8 +1,24 @@
 import { Capacitor } from '@capacitor/core';
+import { supabase } from './supabase';
+import { apiUrl } from './api';
+
+// Sends the device's push token to our backend so it can be targeted later.
+async function saveToken(token) {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) return;
+    await fetch(apiUrl('/api/register-device'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+      body: JSON.stringify({ token, platform: Capacitor.getPlatform() }),
+    });
+  } catch (e) {
+    console.error('[push] saveToken failed:', e);
+  }
+}
 
 // Initializes push notifications on native (Android/iOS) only.
-// On web this is a no-op. The device token is logged — send it to your
-// backend later to target a specific device (e.g. new-lead alerts).
+// On web this is a no-op.
 export async function initPush() {
   if (!Capacitor.isNativePlatform()) return;
 
@@ -19,7 +35,7 @@ export async function initPush() {
 
   PushNotifications.addListener('registration', (token) => {
     console.log('[push] device token:', token.value);
-    // TODO: POST token.value to your backend to enable targeted notifications.
+    saveToken(token.value);
   });
 
   PushNotifications.addListener('registrationError', (err) => {

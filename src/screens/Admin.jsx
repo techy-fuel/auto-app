@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { apiUrl } from '../lib/api';
+import { Button } from '../components/core/Button';
 
 function timeAgo(iso) {
   if (!iso) return 'Never';
@@ -17,8 +18,32 @@ export function Admin() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [acting, setActing] = useState(null);
+  const [pushTitle, setPushTitle] = useState('');
+  const [pushBody, setPushBody] = useState('');
+  const [pushSending, setPushSending] = useState(false);
+  const [pushResult, setPushResult] = useState('');
 
   useEffect(() => { fetchUsers(); }, []);
+
+  async function sendPush() {
+    if (!pushTitle.trim() || !pushBody.trim()) return;
+    setPushSending(true); setPushResult('');
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch(apiUrl('/api/send-push'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token}` },
+        body: JSON.stringify({ title: pushTitle, body: pushBody }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed');
+      setPushResult(data.sent > 0 ? `✓ Sent to ${data.sent} device(s)` : (data.message || 'No devices registered yet'));
+      setPushTitle(''); setPushBody('');
+    } catch (e) {
+      setPushResult(`Error: ${e.message}`);
+    }
+    setPushSending(false);
+  }
 
   async function fetchUsers() {
     setLoading(true); setError('');
@@ -92,6 +117,24 @@ export function Admin() {
           {error === 'Forbidden' ? '⛔ You do not have admin access.' : `Error: ${error}`}
         </div>
       )}
+
+      {/* Send push notification */}
+      <div style={{ background: 'var(--white)', border: '1px solid var(--border-soft)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-5)', boxShadow: 'var(--shadow-card)' }}>
+        <h3 style={{ font: 'var(--weight-bold) 14px/1 var(--font-display)', color: 'var(--text-strong)', marginBottom: 4 }}>📢 Send Push Notification</h3>
+        <p style={{ font: '12px/1.4 var(--font-body)', color: 'var(--text-muted)', marginBottom: 'var(--space-4)' }}>Broadcasts to all registered devices (requires Firebase setup — see MOBILE.md).</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+          <input value={pushTitle} onChange={e => setPushTitle(e.target.value)} placeholder="Title — e.g. New hot lead!"
+            style={{ width: '100%', padding: '9px 12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-soft)', font: '13px/1 var(--font-body)', color: 'var(--text-strong)', outline: 'none', boxSizing: 'border-box' }} />
+          <input value={pushBody} onChange={e => setPushBody(e.target.value)} placeholder="Message — e.g. Ahmad (score 88) just came in"
+            style={{ width: '100%', padding: '9px 12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-soft)', font: '13px/1 var(--font-body)', color: 'var(--text-strong)', outline: 'none', boxSizing: 'border-box' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <Button size="sm" variant="accent" onClick={sendPush} disabled={pushSending || !pushTitle.trim() || !pushBody.trim()}>
+              {pushSending ? 'Sending...' : 'Send Notification'}
+            </Button>
+            {pushResult && <span style={{ font: '12px/1 var(--font-body)', color: pushResult.startsWith('Error') ? 'var(--red-500)' : 'var(--emerald-600)' }}>{pushResult}</span>}
+          </div>
+        </div>
+      </div>
 
       {/* Users table */}
       <div style={{ background: 'var(--white)', border: '1px solid var(--border-soft)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-card)', overflow: 'hidden' }}>

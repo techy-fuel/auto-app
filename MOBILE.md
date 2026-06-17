@@ -97,16 +97,48 @@ AAB yahan milegi:
 
 ---
 
-## 6. Push Notifications (optional, baad me)
+## 6. Push Notifications — pura setup
 
-Code ready hai (`src/lib/push.js`) par actual notifications ke liye **Firebase** chahiye:
+Saara **code ready hai** (client + backend + admin UI). Sirf Firebase connect karna hai
+(yeh sirf aap kar sakte ho — Google account chahiye). ~10 minute ka kaam.
 
-1. Firebase project banao → https://console.firebase.google.com
-2. Android app add karo (package: `com.techyfuel.autopilotcrm`)
-3. `google-services.json` download karke `android/app/` me daalo
-4. FCM se notifications bhejo (device token console me log hota hai)
+### Step 1 — Supabase table banao
+Supabase → **SQL Editor** → `supabase/device_tokens.sql` file ka content paste karke **Run**.
 
-Iske bina app theek chalega — bas push notifications off rahenge.
+### Step 2 — Firebase project
+1. https://console.firebase.google.com → **Add project**
+2. Project ke andar **Add app → Android**
+3. Package name daalo: `com.techyfuel.autopilotcrm`
+4. **`google-services.json`** download karke `android/app/` folder me rakho.
+
+### Step 3 — Android me Firebase enable karo (2 chhoti gradle edits)
+
+**`android/build.gradle`** (root) — `dependencies { }` ke andar yeh line add karo:
+```gradle
+classpath 'com.google.gms:google-services:4.4.2'
+```
+
+**`android/app/build.gradle`** — file ke sabse upar `apply plugin` waali lines ke saath add karo:
+```gradle
+apply plugin: 'com.google.gms.google-services'
+```
+> ⚠️ Yeh do lines tabhi add karo jab `google-services.json` daal diya ho — warna
+> build fail hoti hai.
+
+### Step 4 — Server ko bhejne ki permission do (Vercel env var)
+1. Firebase Console → **Project Settings → Service accounts → Generate new private key** → ek JSON file milegi.
+2. Us poori JSON ko **ek line** me copy karo.
+3. Vercel → project → **Settings → Environment Variables** → add karo:
+   - Name: `FIREBASE_SERVICE_ACCOUNT`
+   - Value: (woh poora JSON)
+4. Redeploy.
+
+### Ho gaya! Ab kaise bhejein
+- App phone par kholo + login karo → device token apne aap save ho jata hai.
+- **Admin Dashboard** me "📢 Send Push Notification" card se title + message likho → **Send** dabao.
+- Sab registered phones par notification aa jayegi. 🔔
+
+> Iske bina bhi app **bilkul theek chalega** — sirf push notifications off rahenge.
 
 ---
 

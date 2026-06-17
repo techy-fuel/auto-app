@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useUser } from '@clerk/clerk-react';
+
 import { db } from '../lib/supabase';
 import { Badge } from '../components/core/Badge';
 import { Avatar } from '../components/core/Avatar';
@@ -76,8 +76,8 @@ function DealCard({ deal, onMove, onDelete }) {
   );
 }
 
-export function Pipeline() {
-  const { user } = useUser();
+export function Pipeline({ user }) {
+  
   const [deals, setDeals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);

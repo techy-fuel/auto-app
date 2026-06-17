@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useUser } from '@clerk/clerk-react';
+
 import { db } from '../lib/supabase';
 
 const avatarColors = ['#0A2540', '#059669', '#2563EB', '#7C3AED', '#D97706'];
@@ -31,7 +31,7 @@ function initials(name) {
 // ---- Screen: Home ----
 function HomeScreen({ leads, loading, onSelectLead, onCopilot, user }) {
   const hotLeads = leads.filter(l => (l.score || 0) >= 70).slice(0, 3);
-  const displayName = user?.firstName || 'Sales Rep';
+  const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Sales Rep';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto', background: 'var(--slate-50)' }}>
@@ -299,8 +299,8 @@ function BottomNav({ screen, onNavigate }) {
   );
 }
 
-export function MobileApp() {
-  const { user } = useUser();
+export function MobileApp({ user }) {
+  
   const [screen, setScreen] = useState('home');
   const [selectedLead, setSelectedLead] = useState(null);
   const [leads, setLeads] = useState([]);

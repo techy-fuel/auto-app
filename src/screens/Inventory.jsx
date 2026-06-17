@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useUser } from '@clerk/clerk-react';
+
 import { db } from '../lib/supabase';
 import { Button } from '../components/core/Button';
 import { Input } from '../components/forms/Input';
@@ -32,8 +32,8 @@ function parseCSV(text) {
   }).filter(v => v.make && v.model);
 }
 
-export function Inventory() {
-  const { user } = useUser();
+export function Inventory({ user }) {
+  
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');

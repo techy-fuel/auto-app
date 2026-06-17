@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useUser, useClerk } from '@clerk/clerk-react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from './lib/supabase';
 import { Sidebar } from './components/layout/Sidebar';
 import { Topbar } from './components/layout/Topbar';
 import { Dashboard } from './screens/Dashboard';
@@ -30,13 +30,29 @@ const crmScreens = {
 };
 
 export default function App() {
-  const { isSignedIn, isLoaded, user } = useUser();
-  const { signOut } = useClerk();
-  const [view, setView] = useState('crm'); // 'crm' | 'mobile'
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [view, setView] = useState('crm');
   const [page, setPage] = useState('dashboard');
-  const [authModal, setAuthModal] = useState(null); // null | 'signin' | 'signup'
+  const [authModal, setAuthModal] = useState(null);
 
-  if (!isLoaded) {
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  async function signOut() {
+    await supabase.auth.signOut();
+    setUser(null);
+  }
+
+  if (loading) {
     return (
       <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-app)' }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
@@ -47,14 +63,14 @@ export default function App() {
     );
   }
 
-  if (!isSignedIn) {
+  if (!user) {
     return (
       <>
         <LandingPage
           onLaunchApp={() => setAuthModal('signin')}
           onSignUp={() => setAuthModal('signup')}
         />
-        {authModal && <AuthModal mode={authModal} onClose={() => setAuthModal(null)} />}
+        {authModal && <AuthModal mode={authModal} onClose={() => setAuthModal(null)} onAuth={setUser} />}
       </>
     );
   }
@@ -79,7 +95,7 @@ export default function App() {
             </div>
           </div>
           <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-            <MobileApp />
+            <MobileApp user={user} />
           </div>
           <div style={{ height: 34, background: 'var(--white)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <div style={{ width: 120, height: 4, background: 'var(--slate-300)', borderRadius: 99 }} />
@@ -92,16 +108,11 @@ export default function App() {
   const Screen = crmScreens[page] || Dashboard;
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'var(--bg-app)' }}>
-      <Sidebar active={page} onNavigate={setPage} isAdmin={user?.emailAddresses?.[0]?.emailAddress === ADMIN_EMAIL} />
+      <Sidebar active={page} onNavigate={setPage} isAdmin={user?.email === ADMIN_EMAIL} />
       <div style={{ marginLeft: 'var(--sidebar-w)', flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        <Topbar
-          page={page}
-          user={user}
-          onMobilePreview={() => setView('mobile')}
-          onSignOut={() => signOut()}
-        />
+        <Topbar page={page} user={user} onMobilePreview={() => setView('mobile')} onSignOut={signOut} />
         <main style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
-          <Screen />
+          <Screen user={user} />
         </main>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useUser } from '@clerk/clerk-react';
+
 import { db } from '../lib/supabase';
 import { Button } from '../components/core/Button';
 import { Badge } from '../components/core/Badge';
@@ -13,8 +13,8 @@ import { Tabs } from '../components/navigation/Tabs';
 const statusTone = { New: 'blue', Contacted: 'slate', Qualified: 'emerald', Proposal: 'violet', Negotiation: 'amber', Won: 'emerald', Lost: 'red' };
 const emptyForm = { name: '', email: '', company: '', phone: '', value: '', score: 50, status: 'New', source: '', assigned: '' };
 
-export function Leads() {
-  const { user } = useUser();
+export function Leads({ user }) {
+  
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');

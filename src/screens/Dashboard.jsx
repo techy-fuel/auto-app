@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useUser } from '@clerk/clerk-react';
+
 import { db } from '../lib/supabase';
 import { AiInsight } from '../components/data/AiInsight';
 import { Button } from '../components/core/Button';
@@ -36,8 +36,8 @@ function SalesChart({ data }) {
   );
 }
 
-export function Dashboard() {
-  const { user } = useUser();
+export function Dashboard({ user }) {
+  
   const [stats, setStats] = useState({ vehicles: 0, leads: 0, available: 0, sold: 0, stockValue: 0 });
   const [topVehicles, setTopVehicles] = useState([]);
   const [funnelData, setFunnelData] = useState([]);

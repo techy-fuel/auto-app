@@ -12,10 +12,8 @@ const pageTitles = {
 };
 
 export function Topbar({ page, user, onMobilePreview, onSignOut }) {
-  const initials = user
-    ? ((user.firstName?.[0] || '') + (user.lastName?.[0] || '')).toUpperCase() || user.emailAddresses?.[0]?.emailAddress?.[0]?.toUpperCase() || '?'
-    : '?';
-  const displayName = user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user?.emailAddresses?.[0]?.emailAddress || '';
+  const displayName = user?.user_metadata?.full_name || user?.email || '';
+  const initials = displayName ? displayName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : '?';
 
   return (
     <header style={{
@@ -95,8 +93,8 @@ export function Topbar({ page, user, onMobilePreview, onSignOut }) {
 
         {/* User + Sign Out */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          {user?.imageUrl ? (
-            <img src={user.imageUrl} alt={displayName} style={{ width: 34, height: 34, borderRadius: '50%', border: '2px solid var(--white)', boxShadow: 'var(--shadow-sm)', objectFit: 'cover' }} />
+          {user?.user_metadata?.avatar_url ? (
+            <img src={user.user_metadata.avatar_url} alt={displayName} style={{ width: 34, height: 34, borderRadius: '50%', border: '2px solid var(--white)', boxShadow: 'var(--shadow-sm)', objectFit: 'cover' }} />
           ) : (
             <div style={{
               width: 34, height: 34, borderRadius: '50%',

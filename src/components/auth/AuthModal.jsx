@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { supabase } from '../../lib/supabase';
 
 export function AuthModal({ mode: initialMode = 'signin', onClose, onAuth }) {
-  const [mode, setMode] = useState(initialMode);
+  const [mode, setMode] = useState(initialMode); // 'signin' | 'signup' | 'forgot'
   const [form, setForm] = useState({ email: '', password: '', name: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -35,6 +35,17 @@ export function AuthModal({ mode: initialMode = 'signin', onClose, onAuth }) {
     setLoading(false);
   }
 
+  async function handleForgot(e) {
+    e.preventDefault();
+    setLoading(true); setError('');
+    const { error } = await supabase.auth.resetPasswordForEmail(form.email, {
+      redirectTo: `${window.location.origin}`,
+    });
+    if (error) { setError(error.message); setLoading(false); return; }
+    setMessage('Password reset link bhej diya! Email check karo.');
+    setLoading(false);
+  }
+
   async function handleGoogle() {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -61,16 +72,31 @@ export function AuthModal({ mode: initialMode = 'signin', onClose, onAuth }) {
         </div>
 
         <h2 style={{ font: '700 22px/1.2 Inter, sans-serif', color: '#0F172A', marginBottom: 6 }}>
-          {mode === 'signin' ? 'Welcome back' : 'Create your account'}
+          {mode === 'signin' ? 'Welcome back' : mode === 'signup' ? 'Create your account' : 'Reset password'}
         </h2>
         <p style={{ font: '14px/1 Inter, sans-serif', color: '#64748B', marginBottom: 24 }}>
-          {mode === 'signin' ? 'Sign in to your dealership CRM' : 'Start your 14-day free trial'}
+          {mode === 'signin' ? 'Sign in to your dealership CRM' : mode === 'signup' ? 'Start your 14-day free trial' : 'Enter your email to receive a reset link'}
         </p>
 
         {message ? (
           <div style={{ background: '#ECFDF5', border: '1px solid #A7F3D0', borderRadius: 10, padding: '14px 16px', color: '#065F46', font: '14px/1.5 Inter, sans-serif' }}>
             ✅ {message}
+            <button onClick={() => { setMode('signin'); setMessage(''); }} style={{ display: 'block', marginTop: 12, border: 'none', background: 'none', color: '#059669', font: '600 13px/1 Inter, sans-serif', cursor: 'pointer', padding: 0 }}>← Back to Sign In</button>
           </div>
+        ) : mode === 'forgot' ? (
+          <form onSubmit={handleForgot} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <div>
+              <label style={{ font: '600 12px/1 Inter, sans-serif', color: '#374151', display: 'block', marginBottom: 6 }}>Email address</label>
+              <input type="email" required value={form.email} onChange={e => set('email', e.target.value)} placeholder="you@dealership.com" style={inp} />
+            </div>
+            {error && <p style={{ color: '#EF4444', font: '13px/1.4 Inter, sans-serif', margin: 0 }}>{error}</p>}
+            <button type="submit" disabled={loading} style={{ width: '100%', padding: '13px', borderRadius: 10, border: 'none', background: loading ? '#A7F3D0' : 'linear-gradient(135deg,#059669,#10B981)', color: 'white', font: '600 15px/1 Inter, sans-serif', cursor: loading ? 'not-allowed' : 'pointer' }}>
+              {loading ? '...' : 'Send Reset Link →'}
+            </button>
+            <p style={{ font: '13px/1 Inter, sans-serif', color: '#64748B', textAlign: 'center', margin: 0 }}>
+              <button onClick={() => { setMode('signin'); setError(''); }} style={{ border: 'none', background: 'none', color: '#059669', font: '600 13px/1 Inter, sans-serif', cursor: 'pointer', padding: 0 }}>← Back to Sign In</button>
+            </p>
+          </form>
         ) : (
           <>
             <form onSubmit={mode === 'signin' ? handleSignIn : handleSignUp} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -85,7 +111,12 @@ export function AuthModal({ mode: initialMode = 'signin', onClose, onAuth }) {
                 <input type="email" required value={form.email} onChange={e => set('email', e.target.value)} placeholder="you@dealership.com" style={inp} />
               </div>
               <div>
-                <label style={{ font: '600 12px/1 Inter, sans-serif', color: '#374151', display: 'block', marginBottom: 6 }}>Password</label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                  <label style={{ font: '600 12px/1 Inter, sans-serif', color: '#374151' }}>Password</label>
+                  {mode === 'signin' && (
+                    <button type="button" onClick={() => { setMode('forgot'); setError(''); }} style={{ border: 'none', background: 'none', color: '#059669', font: '600 12px/1 Inter, sans-serif', cursor: 'pointer', padding: 0 }}>Forgot password?</button>
+                  )}
+                </div>
                 <input type="password" required value={form.password} onChange={e => set('password', e.target.value)} placeholder="••••••••" style={inp} />
               </div>
 

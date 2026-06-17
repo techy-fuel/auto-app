@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap');
+
+:root {
+  --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body:    'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --text-xs:   12px;
+  --text-sm:   13px;
+  --text-base: 14px;
+  --text-md:   15px;
+  --text-lg:   17px;
+  --text-xl:   20px;
+  --text-2xl:  24px;
+  --text-3xl:  30px;
+  --text-4xl:  38px;
+  --text-5xl:  48px;
+  --text-6xl:  60px;
+  --text-7xl:  76px;
+
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+  --weight-extra:    800;
+
+  --leading-tight:   1.1;
+  --leading-snug:    1.25;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.65;
+
+  --tracking-tight:  -0.02em;
+  --tracking-snug:   -0.01em;
+  --tracking-normal:  0;
+  --tracking-wide:    0.04em;
+  --tracking-caps:    0.08em;
+
+  --type-display: var(--weight-extra) var(--text-5xl)/var(--leading-tight) var(--font-display);
+  --type-h1:      var(--weight-bold)  var(--text-3xl)/var(--leading-snug) var(--font-display);
+  --type-h2:      var(--weight-bold)  var(--text-2xl)/var(--leading-snug) var(--font-display);
+  --type-h3:      var(--weight-semibold) var(--text-xl)/var(--leading-snug) var(--font-display);
+  --type-body:    var(--weight-regular) var(--text-base)/var(--leading-normal) var(--font-body);
+  --type-label:   var(--weight-semibold) var(--text-sm)/var(--leading-snug) var(--font-body);
+  --type-caption: var(--weight-medium) var(--text-xs)/var(--leading-snug) var(--font-body);
+  --type-metric:  var(--weight-bold) var(--text-3xl)/var(--leading-tight) var(--font-display);
+  --type-mono:    var(--weight-medium) var(--text-sm)/var(--leading-normal) var(--font-mono);
+}

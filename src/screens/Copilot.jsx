@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '../components/core/Button';
 import { AiInsight } from '../components/data/AiInsight';
 import { supabase } from '../lib/supabase';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 const suggestions = [
   'Which leads should I prioritize today?',
@@ -72,6 +73,7 @@ export function Copilot({ user }) {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -219,6 +221,7 @@ export function Copilot({ user }) {
       </div>
 
       {/* Right panel */}
+      {!isMobile && (
       <div style={{
         width: 280, borderLeft: '1px solid var(--border-soft)',
         background: 'var(--white)', padding: 'var(--space-5)',
@@ -261,6 +264,7 @@ export function Copilot({ user }) {
           </div>
         </div>
       </div>
+      )}
 
       <style>{`
         @keyframes pulse {

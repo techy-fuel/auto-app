@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from './lib/supabase';
+import { useIsMobile } from './hooks/useIsMobile';
 import { Sidebar } from './components/layout/Sidebar';
 import { Topbar } from './components/layout/Topbar';
 import { Dashboard } from './screens/Dashboard';
@@ -39,6 +40,8 @@ export default function App() {
   const [page, setPage] = useState('dashboard');
   const [authModal, setAuthModal] = useState(null);
   const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -120,11 +123,26 @@ export default function App() {
   }
 
   const Screen = crmScreens[page] || Dashboard;
+  const navigate = (p) => { setPage(p); setSidebarOpen(false); };
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'var(--bg-app)' }}>
-      <Sidebar active={page} onNavigate={setPage} isAdmin={user?.email === ADMIN_EMAIL} user={user} />
-      <div style={{ marginLeft: 'var(--sidebar-w)', flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        <Topbar page={page} user={user} onMobilePreview={() => setView('mobile')} onSignOut={signOut} onNavigate={setPage} />
+      <Sidebar
+        active={page}
+        onNavigate={navigate}
+        isAdmin={user?.email === ADMIN_EMAIL}
+        user={user}
+        isMobile={isMobile}
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+      {/* Mobile backdrop */}
+      {isMobile && sidebarOpen && (
+        <div onClick={() => setSidebarOpen(false)} style={{
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 99,
+        }} />
+      )}
+      <div style={{ marginLeft: isMobile ? 0 : 'var(--sidebar-w)', flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0 }}>
+        <Topbar page={page} user={user} onMobilePreview={() => setView('mobile')} onSignOut={signOut} onNavigate={setPage} isMobile={isMobile} onMenuClick={() => setSidebarOpen(true)} />
         <main style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
           <Screen user={user} />
         </main>

@@ -12,7 +12,7 @@ const pageTitles = {
   reports: 'Reports & Analytics',
 };
 
-export function Topbar({ page, user, onMobilePreview, onSignOut, onNavigate }) {
+export function Topbar({ page, user, onMobilePreview, onSignOut, onNavigate, isMobile, onMenuClick }) {
   const displayName = user?.user_metadata?.full_name || user?.email || '';
   const initials = displayName ? displayName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : '?';
 
@@ -62,22 +62,35 @@ export function Topbar({ page, user, onMobilePreview, onSignOut, onNavigate }) {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      padding: '0 var(--space-6)',
+      padding: isMobile ? '0 var(--space-4)' : '0 var(--space-6)',
       position: 'sticky',
       top: 0,
       zIndex: 50,
       boxShadow: 'var(--shadow-xs)',
+      gap: 12,
     }}>
-      <div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
+        {isMobile && (
+          <button onClick={onMenuClick} style={{
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            width: 38, height: 38, borderRadius: 'var(--radius-md)',
+            border: '1px solid var(--border-soft)', background: 'var(--white)',
+            cursor: 'pointer', color: 'var(--text-strong)', flexShrink: 0,
+          }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+        )}
         <h1 style={{
-          font: 'var(--weight-bold) 20px/1 var(--font-display)',
+          font: `var(--weight-bold) ${isMobile ? '16px' : '20px'}/1 var(--font-display)`,
           color: 'var(--text-strong)',
           letterSpacing: 'var(--tracking-tight)',
+          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>{pageTitles[page] || 'Dashboard'}</h1>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         {/* Search */}
+        {!isMobile && (
         <div ref={searchRef} style={{ position: 'relative' }}>
           <div style={{
             display: 'flex', alignItems: 'center', gap: 8,
@@ -128,6 +141,7 @@ export function Topbar({ page, user, onMobilePreview, onSignOut, onNavigate }) {
             </div>
           )}
         </div>
+        )}
 
         {/* Notifications */}
         <div ref={notifRef} style={{ position: 'relative' }}>
@@ -181,6 +195,7 @@ export function Topbar({ page, user, onMobilePreview, onSignOut, onNavigate }) {
         </div>
 
         {/* Mobile Preview */}
+        {!isMobile && (
         <button onClick={onMobilePreview} style={{
           display: 'inline-flex', alignItems: 'center', gap: 6,
           padding: '0 12px', height: 38,
@@ -192,6 +207,7 @@ export function Topbar({ page, user, onMobilePreview, onSignOut, onNavigate }) {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
           Mobile
         </button>
+        )}
 
         {/* User + Sign Out */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -206,9 +222,11 @@ export function Topbar({ page, user, onMobilePreview, onSignOut, onNavigate }) {
               border: '2px solid var(--white)', boxShadow: 'var(--shadow-sm)',
             }}>{initials}</div>
           )}
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ font: 'var(--weight-semibold) 12px/1.2 var(--font-display)', color: 'var(--text-strong)' }}>{displayName}</span>
-          </div>
+          {!isMobile && (
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={{ font: 'var(--weight-semibold) 12px/1.2 var(--font-display)', color: 'var(--text-strong)' }}>{displayName}</span>
+            </div>
+          )}
           <button onClick={onSignOut} style={{
             display: 'inline-flex', alignItems: 'center', gap: 5,
             padding: '0 10px', height: 32,

@@ -4,6 +4,7 @@ import { Badge } from '../components/core/Badge';
 import { Avatar } from '../components/core/Avatar';
 import { AiInsight } from '../components/data/AiInsight';
 import { supabase } from '../lib/supabase';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 
 const templates = [
@@ -20,6 +21,8 @@ export function WhatsApp({ user }) {
   const [active, setActive] = useState(null);
   const [input, setInput] = useState('');
   const [msgs, setMsgs] = useState([]);
+  const [mobileChat, setMobileChat] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (!user?.id) return;
@@ -51,7 +54,8 @@ export function WhatsApp({ user }) {
     <div style={{ display: 'flex', height: '100%', overflow: 'hidden' }}>
 
       {/* Sidebar — Conversations */}
-      <div style={{ width: 300, borderRight: '1px solid var(--border-soft)', background: 'var(--white)', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
+      {(!isMobile || !mobileChat) && (
+      <div style={{ width: isMobile ? '100%' : 300, borderRight: '1px solid var(--border-soft)', background: 'var(--white)', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
         <div style={{ padding: 'var(--space-4) var(--space-5)', borderBottom: '1px solid var(--border-soft)' }}>
           <div style={{ font: 'var(--weight-bold) 15px/1 var(--font-display)', color: 'var(--text-strong)', marginBottom: 10 }}>WhatsApp Inbox</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--slate-50)', border: '1px solid var(--border-soft)', borderRadius: 'var(--radius-md)', padding: '0 12px', height: 36 }}>
@@ -66,11 +70,11 @@ export function WhatsApp({ user }) {
             </div>
           )}
           {conversations.map(c => (
-            <div key={c.id} onClick={() => setActive(c)} style={{
+            <div key={c.id} onClick={() => { setActive(c); setMobileChat(true); }} style={{
               display: 'flex', gap: 10, padding: '12px 16px',
               cursor: 'pointer', borderBottom: '1px solid var(--divider)',
-              background: active.id === c.id ? 'var(--emerald-50)' : 'transparent',
-              borderLeft: active.id === c.id ? '3px solid var(--emerald-500)' : '3px solid transparent',
+              background: active?.id === c.id ? 'var(--emerald-50)' : 'transparent',
+              borderLeft: active?.id === c.id ? '3px solid var(--emerald-500)' : '3px solid transparent',
             }}>
               <Avatar name={c.name} size={38} />
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -88,9 +92,11 @@ export function WhatsApp({ user }) {
           ))}
         </div>
       </div>
+      )}
 
       {/* Chat Window */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      {(!isMobile || mobileChat) && (
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0 }}>
         {!active && (
           <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', font: '14px/1 var(--font-body)' }}>
             Select a conversation to start chatting
@@ -100,6 +106,16 @@ export function WhatsApp({ user }) {
         {/* Chat header */}
         <div style={{ padding: 'var(--space-4) var(--space-5)', borderBottom: '1px solid var(--border-soft)', background: 'var(--white)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            {isMobile && (
+              <button onClick={() => setMobileChat(false)} style={{
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                width: 34, height: 34, borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-soft)', background: 'var(--white)',
+                cursor: 'pointer', color: 'var(--text-strong)', flexShrink: 0,
+              }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+              </button>
+            )}
             <Avatar name={active.name} size={38} status="online" />
             <div>
               <div style={{ font: 'var(--weight-bold) 14px/1 var(--font-display)', color: 'var(--text-strong)' }}>{active.name}</div>
@@ -162,8 +178,10 @@ export function WhatsApp({ user }) {
         </div>
         </>}
       </div>
+      )}
 
       {/* Right panel */}
+      {!isMobile && (
       <div style={{ width: 260, borderLeft: '1px solid var(--border-soft)', background: 'var(--white)', padding: 'var(--space-5)', overflowY: 'auto' }}>
         <h3 style={{ font: 'var(--weight-bold) 13px/1 var(--font-display)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 'var(--space-4)' }}>Lead Info</h3>
         {active ? (
@@ -188,6 +206,7 @@ export function WhatsApp({ user }) {
           <div style={{ color: 'var(--text-muted)', font: '13px/1.5 var(--font-body)' }}>Select a conversation to see lead details.</div>
         )}
       </div>
+      )}
     </div>
   );
 }

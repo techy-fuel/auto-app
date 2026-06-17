@@ -75,7 +75,7 @@ export function Leads({ user }) {
       {showForm && (
         <div style={{ background: 'var(--white)', border: '1px solid var(--border-soft)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-6)', boxShadow: 'var(--shadow-card)' }}>
           <h3 style={{ font: 'var(--weight-bold) 15px/1 var(--font-display)', color: 'var(--text-strong)', marginBottom: 'var(--space-5)' }}>Add New Lead</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--space-4)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 'var(--space-4)' }}>
             {[
               { label: 'Full Name *', key: 'name', placeholder: 'Ahmad Al Mansouri' },
               { label: 'Email', key: 'email', placeholder: 'ahmad@example.com' },
@@ -113,7 +113,7 @@ export function Leads({ user }) {
       )}
 
       <div style={{ background: 'var(--surface-card)', border: '1px solid var(--border-soft)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-card)', overflow: 'hidden' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'var(--space-4) var(--space-6)', borderBottom: '1px solid var(--border-soft)', gap: 'var(--space-4)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'var(--space-4) var(--space-6)', borderBottom: '1px solid var(--border-soft)', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
           <Tabs tabs={tabs} value={activeTab} onChange={setActiveTab} />
           <div style={{ display: 'flex', gap: 10, flexShrink: 0 }}>
             <Input placeholder="Search leads..." value={search} onChange={e => setSearch(e.target.value)} size="sm" style={{ width: 200 }}
@@ -130,7 +130,7 @@ export function Leads({ user }) {
         {loading ? (
           <div style={{ padding: 'var(--space-12)', textAlign: 'center', color: 'var(--text-muted)' }}>Loading leads...</div>
         ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: 'var(--slate-50)' }}>
                 {['Lead', 'Company', 'Value (AED)', 'AI Score', 'Status', 'Source', 'Assigned', ''].map(h => (

@@ -72,7 +72,7 @@ export function Admin() {
       </div>
 
       {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--space-4)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 'var(--space-4)' }}>
         {[
           { label: 'Total Users', value: loading ? '…' : total, color: 'var(--navy-600)' },
           { label: 'Active Today', value: loading ? '…' : activeToday, color: 'var(--emerald-600)' },
@@ -104,7 +104,7 @@ export function Admin() {
         {loading ? (
           <div style={{ padding: 'var(--space-12)', textAlign: 'center', color: 'var(--text-muted)' }}>Loading users...</div>
         ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: 'var(--slate-50)' }}>
                 {['User', 'Email', 'Leads', 'Last Login', 'Joined', 'Status', 'Actions'].map(h => (

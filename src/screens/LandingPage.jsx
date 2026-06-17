@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 export function LandingPage({ onLaunchApp, onSignUp }) {
   const [faqOpen, setFaqOpen] = useState(null);
+  const isMobile = useIsMobile();
 
   const toggleFaq = (index) => {
     setFaqOpen(faqOpen === index ? null : index);

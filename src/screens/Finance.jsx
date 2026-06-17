@@ -36,7 +36,7 @@ function EmiCalculator() {
     <div style={{ maxWidth: 600, margin: '0 auto', padding: 'var(--space-6)' }}>
       <div style={{ background: 'var(--white)', border: '1px solid var(--border-soft)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-6)', boxShadow: 'var(--shadow-card)' }}>
         <h3 style={{ font: 'var(--weight-bold) 16px/1 var(--font-display)', color: 'var(--text-strong)', marginBottom: 'var(--space-6)' }}>EMI Calculator</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 'var(--space-4)' }}>
           {[
             { label: 'Vehicle Price (AED)', value: price, setter: setPrice },
             { label: 'Down Payment (AED)', value: down, setter: setDown },
@@ -114,7 +114,7 @@ export function Finance({ user }) {
     <div style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-5)', height: '100%', overflow: 'auto' }}>
 
       {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--space-4)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 'var(--space-4)' }}>
         <StatCard label="Total Applications" value={applications.length} accent="navy" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>} />
         <StatCard label="Approved" value={approved} delta={`${Math.round(approved/applications.length*100)}% rate`} trend="up" accent="emerald" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>} />
         <StatCard label="Total Financed" value={`AED ${(totalFinanced/1000).toFixed(0)}K`} delta="+22%" trend="up" accent="blue" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>} />
@@ -133,7 +133,7 @@ export function Finance({ user }) {
         </div>
 
         {tab === 'applications' && (
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: 'var(--slate-50)' }}>
                 {['ID', 'Customer', 'Vehicle', 'Loan Amt', 'Monthly', 'Bank', 'Status', 'Date', ''].map(h => (
@@ -164,7 +164,7 @@ export function Finance({ user }) {
 
         {tab === 'banks' && (
           <div style={{ padding: 'var(--space-6)' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-4)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--space-4)' }}>
               {banks.map(b => (
                 <div key={b.name} style={{ background: b.status === 'active' ? 'var(--white)' : 'var(--slate-50)', border: `1px solid ${b.status === 'active' ? 'var(--border-soft)' : 'var(--border-soft)'}`, borderRadius: 'var(--radius-md)', padding: 'var(--space-5)', boxShadow: b.status === 'active' ? 'var(--shadow-card)' : 'none', opacity: b.status === 'active' ? 1 : 0.6 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>

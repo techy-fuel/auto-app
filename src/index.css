@@ -23,3 +23,8 @@ input, select, textarea { font-family: inherit; }
 ::-webkit-scrollbar-thumb:hover { background: var(--slate-300); }
 
 #root { height: 100vh; display: flex; flex-direction: column; }
+
+/* On mobile, let wide data tables scroll horizontally instead of breaking layout */
+@media (max-width: 768px) {
+  .data-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+}

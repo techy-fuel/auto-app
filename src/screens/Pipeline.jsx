@@ -127,7 +127,7 @@ export function Pipeline({ user }) {
   return (
     <div style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-5)', height: '100%' }}>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--space-3)', flexWrap: 'wrap' }}>
         <div style={{ font: '13px/1 var(--font-body)', color: 'var(--text-muted)' }}>
           Total Pipeline: <strong style={{ color: 'var(--text-strong)' }}>AED {totalValue.toLocaleString()}</strong> across {deals.length} deals
         </div>
@@ -146,7 +146,7 @@ export function Pipeline({ user }) {
       {showForm && (
         <div style={{ background: 'var(--white)', border: '1px solid var(--border-soft)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-5)', boxShadow: 'var(--shadow-card)' }}>
           <h3 style={{ font: 'var(--weight-bold) 14px/1 var(--font-display)', color: 'var(--text-strong)', marginBottom: 'var(--space-4)' }}>Add Deal</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 'var(--space-3)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 'var(--space-3)' }}>
             {[
               { label: 'Name *', key: 'name', placeholder: 'Ahmad Al Mansouri' },
               { label: 'Company', key: 'company', placeholder: 'Al Futtaim' },
@@ -177,7 +177,7 @@ export function Pipeline({ user }) {
       {loading ? (
         <div style={{ textAlign: 'center', padding: 'var(--space-12)', color: 'var(--text-muted)' }}>Loading pipeline...</div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 'var(--space-4)', flex: 1, minHeight: 0, overflowX: 'auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, minmax(240px, 1fr))', gap: 'var(--space-4)', flex: 1, minHeight: 0, overflowX: 'auto' }}>
           {stages.map(stage => {
             const c = stageColors[stage];
             const cards = byStage(stage);

@@ -90,7 +90,7 @@ function NavBtn({ item, active, onNavigate }) {
   );
 }
 
-export function Sidebar({ active, onNavigate, isAdmin, user }) {
+export function Sidebar({ active, onNavigate, isAdmin, user, isMobile, open, onClose }) {
   return (
     <aside style={{
       width: 'var(--sidebar-w)',
@@ -106,6 +106,9 @@ export function Sidebar({ active, onNavigate, isAdmin, user }) {
       bottom: 0,
       zIndex: 100,
       overflowY: 'auto',
+      transform: isMobile && !open ? 'translateX(-100%)' : 'translateX(0)',
+      transition: 'transform var(--dur-base, 0.25s) var(--ease-out)',
+      boxShadow: isMobile && open ? '0 0 40px rgba(0,0,0,0.4)' : 'none',
     }}>
       {/* Logo */}
       <div style={{
@@ -115,6 +118,7 @@ export function Sidebar({ active, onNavigate, isAdmin, user }) {
         padding: '0 var(--space-5)',
         borderBottom: '1px solid var(--navy-700)',
         flexShrink: 0,
+        justifyContent: 'space-between',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{
@@ -133,6 +137,16 @@ export function Sidebar({ active, onNavigate, isAdmin, user }) {
             letterSpacing: '-0.01em',
           }}>AutoPilot CRM</span>
         </div>
+        {isMobile && (
+          <button onClick={onClose} style={{
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            width: 32, height: 32, borderRadius: 'var(--radius-sm)',
+            border: 'none', background: 'rgba(255,255,255,0.08)',
+            color: 'var(--white)', cursor: 'pointer',
+          }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        )}
       </div>
 
       {/* Nav */}

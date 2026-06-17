@@ -81,12 +81,12 @@ export function Reports({ user }) {
     <div style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
         <div>
           <h2 style={{ font: 'var(--weight-bold) 18px/1 var(--font-display)', color: 'var(--text-strong)' }}>Reports & Analytics</h2>
           <p style={{ font: '13px/1 var(--font-body)', color: 'var(--text-muted)', marginTop: 4 }}>Dealership performance overview</p>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {['This Month', 'Last Month', 'Q2 2026', 'YTD'].map(p => (
             <button key={p} onClick={() => setPeriod(p)} style={{
               padding: '7px 14px', borderRadius: 'var(--radius-md)',
@@ -107,7 +107,7 @@ export function Reports({ user }) {
       {tab === 'overview' && (
         <>
           {/* KPIs */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--space-4)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 'var(--space-4)' }}>
             <StatCard label="Total Leads" value={stats.total} accent="navy" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>} />
             <StatCard label="Total Revenue" value={stats.revenue ? `AED ${(stats.revenue/1000).toFixed(0)}K` : 'AED 0'} accent="emerald" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>} />
             <StatCard label="Avg. Deal Size" value={stats.avgDeal ? `AED ${(stats.avgDeal/1000).toFixed(0)}K` : 'AED 0'} accent="violet" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>} />
@@ -119,7 +119,7 @@ export function Reports({ user }) {
           </AiInsight>
 
           {/* Charts */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-5)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--space-5)' }}>
             <div style={{ background: 'var(--white)', border: '1px solid var(--border-soft)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-6)', boxShadow: 'var(--shadow-card)' }}>
               <h3 style={{ font: 'var(--weight-bold) 14px/1 var(--font-display)', color: 'var(--text-strong)', marginBottom: 'var(--space-5)' }}>Leads Added — Last 6 Months</h3>
               {salesByMonth.length > 0 ? <BarChart data={salesByMonth} color="var(--navy-600)" /> : <div style={{ color: 'var(--text-muted)', fontSize: 13, padding: '20px 0' }}>No data yet</div>}

@@ -90,7 +90,7 @@ function NavBtn({ item, active, onNavigate }) {
   );
 }
 
-export function Sidebar({ active, onNavigate, isAdmin }) {
+export function Sidebar({ active, onNavigate, isAdmin, user }) {
   return (
     <aside style={{
       width: 'var(--sidebar-w)',
@@ -167,53 +167,30 @@ export function Sidebar({ active, onNavigate, isAdmin }) {
           </div>
         )}
 
-        {/* AI Sales Score card */}
-        <div style={{
-          margin: '20px 6px 0',
-          background: 'rgba(16,185,129,0.12)',
-          border: '1px solid rgba(16,185,129,0.25)',
-          borderRadius: 'var(--radius-md)',
-          padding: '12px 14px',
-        }}>
-          <div style={{ fontSize: 11, color: 'var(--emerald-400)', fontWeight: 700, marginBottom: 6 }}>✦ AI Sales Score</div>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
-            <span style={{ font: 'var(--weight-extra) 28px/1 var(--font-display)', color: 'var(--white)' }}>82</span>
-            <span style={{ fontSize: 12, color: 'var(--navy-400)' }}>/100</span>
-          </div>
-          <div style={{ fontSize: 11, color: 'var(--navy-400)', marginTop: 4 }}>Dealership health · this month</div>
-        </div>
       </nav>
 
       {/* Bottom */}
       <div style={{ padding: 'var(--space-3)', borderTop: '1px solid var(--navy-700)' }}>
         {bottomItems.map(item => (
-          <button
-            key={item.id}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 12,
-              padding: '10px 14px', borderRadius: 'var(--radius-md)',
-              border: 'none', cursor: 'pointer',
-              background: 'transparent', color: 'var(--navy-300)',
-              font: 'var(--weight-medium) 14px/1 var(--font-display)',
-              width: '100%',
-            }}
-          >{item.icon}{item.label}</button>
+          <NavBtn key={item.id} item={item} active={active} onNavigate={onNavigate} />
         ))}
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 10,
-          padding: '10px 14px', marginTop: 4,
-        }}>
+        {user && (
           <div style={{
-            width: 32, height: 32, borderRadius: '50%',
-            background: 'var(--emerald-600)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: 'var(--white)', fontSize: 13, fontWeight: 700,
-          }}>SA</div>
-          <div>
-            <div style={{ color: 'var(--white)', fontSize: 13, fontWeight: 600 }}>Sarah Ahmed</div>
-            <div style={{ color: 'var(--navy-400)', fontSize: 11 }}>Admin</div>
+            display: 'flex', alignItems: 'center', gap: 10,
+            padding: '10px 14px', marginTop: 4,
+          }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: '50%',
+              background: 'var(--emerald-600)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'var(--white)', fontSize: 13, fontWeight: 700, flexShrink: 0,
+            }}>{(user.email?.[0] || 'U').toUpperCase()}</div>
+            <div style={{ minWidth: 0 }}>
+              <div style={{ color: 'var(--white)', fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.email}</div>
+              <div style={{ color: 'var(--navy-400)', fontSize: 11 }}>{isAdmin ? 'Admin' : 'User'}</div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </aside>
   );

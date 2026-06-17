@@ -14,6 +14,7 @@ import { LandingPage } from './screens/LandingPage';
 import { MobileApp } from './screens/MobileApp';
 import { AuthModal } from './components/auth/AuthModal';
 import { Admin } from './screens/Admin';
+import { Settings } from './screens/Settings';
 import { ResetPassword } from './screens/ResetPassword';
 
 const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
@@ -28,6 +29,7 @@ const crmScreens = {
   finance: Finance,
   reports: Reports,
   admin: Admin,
+  settings: Settings,
 };
 
 export default function App() {
@@ -120,7 +122,7 @@ export default function App() {
   const Screen = crmScreens[page] || Dashboard;
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'var(--bg-app)' }}>
-      <Sidebar active={page} onNavigate={setPage} isAdmin={user?.email === ADMIN_EMAIL} />
+      <Sidebar active={page} onNavigate={setPage} isAdmin={user?.email === ADMIN_EMAIL} user={user} />
       <div style={{ marginLeft: 'var(--sidebar-w)', flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         <Topbar page={page} user={user} onMobilePreview={() => setView('mobile')} onSignOut={signOut} />
         <main style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>

@@ -6,6 +6,8 @@ import { Avatar } from '../components/core/Avatar';
 import { Button } from '../components/core/Button';
 import { AiInsight } from '../components/data/AiInsight';
 import { LeadScore } from '../components/data/LeadScore';
+import { useCurrency } from '../context/CurrencyContext';
+import { formatCurrency } from '../lib/currency';
 
 const stages = ['New', 'Qualified', 'Proposal', 'Negotiation', 'Won'];
 
@@ -45,7 +47,7 @@ function DealCard({ deal, onMove, onDelete }) {
       </div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span style={{ font: 'var(--weight-bold) 14px/1 var(--font-display)', color: 'var(--text-strong)' }}>
-          {deal.value ? `AED ${Number(deal.value).toLocaleString()}` : '—'}
+          {deal.value ? formatCurrency(Number(deal.value), currency) : '—'}
         </span>
         <LeadScore score={deal.score || 50} showBar={false} size="sm" />
       </div>
@@ -77,6 +79,7 @@ function DealCard({ deal, onMove, onDelete }) {
 }
 
 export function Pipeline({ user }) {
+  const { currency } = useCurrency();
   
   const [deals, setDeals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -129,7 +132,7 @@ export function Pipeline({ user }) {
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--space-3)', flexWrap: 'wrap' }}>
         <div style={{ font: '13px/1 var(--font-body)', color: 'var(--text-muted)' }}>
-          Total Pipeline: <strong style={{ color: 'var(--text-strong)' }}>AED {totalValue.toLocaleString()}</strong> across {deals.length} deals
+          Total Pipeline: <strong style={{ color: 'var(--text-strong)' }}>{formatCurrency(totalValue, currency)}</strong> across {deals.length} deals
         </div>
         <Button size="sm" variant="accent" onClick={() => setShowForm(true)}
           iconLeft={<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>}>

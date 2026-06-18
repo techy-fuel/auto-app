@@ -9,11 +9,14 @@ import { AiInsight } from '../components/data/AiInsight';
 import { Input } from '../components/forms/Input';
 import { Select } from '../components/forms/Select';
 import { Tabs } from '../components/navigation/Tabs';
+import { useCurrency } from '../context/CurrencyContext';
+import { formatCurrency } from '../lib/currency';
 
 const statusTone = { New: 'blue', Contacted: 'slate', Qualified: 'emerald', Proposal: 'violet', Negotiation: 'amber', Won: 'emerald', Lost: 'red' };
 const emptyForm = { name: '', email: '', company: '', phone: '', value: '', score: 50, status: 'New', source: '', assigned: '' };
 
 export function Leads({ user }) {
+  const { currency } = useCurrency();
   
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -81,7 +84,7 @@ export function Leads({ user }) {
               { label: 'Email', key: 'email', placeholder: 'ahmad@example.com' },
               { label: 'Company', key: 'company', placeholder: 'Al Futtaim Group' },
               { label: 'Phone', key: 'phone', placeholder: '+971 50 123 4567' },
-              { label: 'Deal Value (AED)', key: 'value', placeholder: '120000' },
+              { label: `Deal Value (AED)`, key: 'value', placeholder: '120000' },
               { label: 'Assigned To', key: 'assigned', placeholder: 'Rashid M.' },
               { label: 'Source', key: 'source', placeholder: 'Website / WhatsApp / Referral' },
             ].map(f => (
@@ -133,7 +136,7 @@ export function Leads({ user }) {
           <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: 'var(--slate-50)' }}>
-                {['Lead', 'Company', 'Value (AED)', 'AI Score', 'Status', 'Source', 'Assigned', ''].map(h => (
+                {['Lead', 'Company', `Value (${currency})`, 'AI Score', 'Status', 'Source', 'Assigned', ''].map(h => (
                   <th key={h} style={{ padding: '10px 16px', textAlign: 'left', font: 'var(--weight-semibold) 11px/1 var(--font-display)', color: 'var(--text-muted)', letterSpacing: '0.05em', textTransform: 'uppercase', borderBottom: '1px solid var(--border-soft)', whiteSpace: 'nowrap' }}>{h}</th>
                 ))}
               </tr>
@@ -154,7 +157,7 @@ export function Leads({ user }) {
                   </td>
                   <td style={{ padding: '14px 16px', font: '13px/1 var(--font-body)', color: 'var(--text-body)' }}>{lead.company}</td>
                   <td style={{ padding: '14px 16px', font: 'var(--weight-bold) 13px/1 var(--font-display)', color: 'var(--text-strong)' }}>
-                    {lead.value ? `AED ${Number(lead.value).toLocaleString()}` : '—'}
+                    {lead.value ? formatCurrency(Number(lead.value), currency) : '—'}
                   </td>
                   <td style={{ padding: '14px 16px' }}><LeadScore score={lead.score} size="sm" /></td>
                   <td style={{ padding: '14px 16px' }}><Badge tone={statusTone[lead.status] || 'slate'} dot>{lead.status}</Badge></td>

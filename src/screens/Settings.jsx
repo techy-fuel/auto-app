@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { Button } from '../components/core/Button';
+import { useCurrency } from '../context/CurrencyContext';
+import { CURRENCIES } from '../lib/currency';
 
 export function Settings({ user }) {
   const [password, setPassword] = useState('');
@@ -8,6 +10,7 @@ export function Settings({ user }) {
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState('');
   const [err, setErr] = useState('');
+  const { currency, setCurrency } = useCurrency();
 
   async function changePassword() {
     if (!password || password.length < 6) { setErr('Password must be at least 6 characters'); return; }
@@ -37,11 +40,37 @@ export function Settings({ user }) {
       {/* Account Info */}
       <div style={{ background: 'var(--white)', border: '1px solid var(--border-soft)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-6)', boxShadow: 'var(--shadow-card)' }}>
         <h3 style={{ font: 'var(--weight-bold) 14px/1 var(--font-display)', color: 'var(--text-strong)', marginBottom: 'var(--space-4)' }}>Account</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-          <div>
-            <label style={{ font: 'var(--weight-semibold) 12px/1 var(--font-display)', color: 'var(--text-muted)', display: 'block', marginBottom: 6 }}>Email</label>
-            <div style={{ padding: '9px 12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-soft)', font: '13px/1 var(--font-body)', color: 'var(--text-muted)', background: 'var(--slate-50)' }}>{user?.email}</div>
-          </div>
+        <div>
+          <label style={{ font: 'var(--weight-semibold) 12px/1 var(--font-display)', color: 'var(--text-muted)', display: 'block', marginBottom: 6 }}>Email</label>
+          <div style={{ padding: '9px 12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-soft)', font: '13px/1 var(--font-body)', color: 'var(--text-muted)', background: 'var(--slate-50)' }}>{user?.email}</div>
+        </div>
+      </div>
+
+      {/* Currency */}
+      <div style={{ background: 'var(--white)', border: '1px solid var(--border-soft)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-6)', boxShadow: 'var(--shadow-card)' }}>
+        <h3 style={{ font: 'var(--weight-bold) 14px/1 var(--font-display)', color: 'var(--text-strong)', marginBottom: 4 }}>Currency</h3>
+        <p style={{ font: '12px/1.4 var(--font-body)', color: 'var(--text-muted)', marginBottom: 'var(--space-4)' }}>All prices in the app will be shown in your selected currency.</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 'var(--space-2)' }}>
+          {Object.entries(CURRENCIES).map(([code, cur]) => (
+            <button
+              key={code}
+              onClick={() => setCurrency(code)}
+              style={{
+                padding: '10px 14px',
+                borderRadius: 'var(--radius-md)',
+                border: currency === code ? '2px solid var(--accent)' : '1px solid var(--border-soft)',
+                background: currency === code ? 'var(--accent-pale)' : 'var(--white)',
+                cursor: 'pointer',
+                textAlign: 'left',
+                transition: 'all 0.15s',
+              }}
+            >
+              <div style={{ font: 'var(--weight-bold) 13px/1 var(--font-display)', color: currency === code ? 'var(--accent)' : 'var(--text-strong)' }}>
+                {cur.symbol} {code}
+              </div>
+              <div style={{ font: '11px/1 var(--font-body)', color: 'var(--text-muted)', marginTop: 4 }}>{cur.name}</div>
+            </button>
+          ))}
         </div>
       </div>
 

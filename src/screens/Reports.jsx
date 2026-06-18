@@ -6,6 +6,8 @@ import { Tabs } from '../components/navigation/Tabs';
 import { AiInsight } from '../components/data/AiInsight';
 import { ProgressRing } from '../components/data/ProgressRing';
 import { supabase } from '../lib/supabase';
+import { useCurrency } from '../context/CurrencyContext';
+import { formatCompact } from '../lib/currency';
 
 // Bar chart component
 function BarChart({ data, color = 'var(--emerald-500)', height = 160 }) {
@@ -36,6 +38,7 @@ const tabs = [
 ];
 
 export function Reports({ user }) {
+  const { currency } = useCurrency();
   const [tab, setTab] = useState('overview');
   const [period, setPeriod] = useState('This Month');
   const [stats, setStats] = useState({ total: 0, revenue: 0, avgDeal: 0, convRate: 0 });
@@ -109,13 +112,13 @@ export function Reports({ user }) {
           {/* KPIs */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 'var(--space-4)' }}>
             <StatCard label="Total Leads" value={stats.total} accent="navy" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>} />
-            <StatCard label="Total Revenue" value={stats.revenue ? `AED ${(stats.revenue/1000).toFixed(0)}K` : 'AED 0'} accent="emerald" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>} />
-            <StatCard label="Avg. Deal Size" value={stats.avgDeal ? `AED ${(stats.avgDeal/1000).toFixed(0)}K` : 'AED 0'} accent="violet" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>} />
+            <StatCard label="Total Revenue" value={stats.revenue ? formatCompact(stats.revenue, currency) : `${currency} 0`} accent="emerald" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>} />
+            <StatCard label="Avg. Deal Size" value={stats.avgDeal ? formatCompact(stats.avgDeal, currency) : `${currency} 0`} accent="violet" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>} />
             <StatCard label="Conversion Rate" value={`${stats.convRate}%`} accent="amber" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>} />
           </div>
 
           <AiInsight title="AI Report Summary" tone="opportunity">
-            {stats.total > 0 ? `${stats.total} total leads tracked. ${stats.convRate}% conversion rate. ${stats.revenue ? `AED ${(stats.revenue/1000).toFixed(0)}K revenue from won deals.` : ''}` : 'Add leads to unlock AI-powered sales reports.'}
+            {stats.total > 0 ? `${stats.total} total leads tracked. ${stats.convRate}% conversion rate. ${stats.revenue ? `${formatCompact(stats.revenue, currency)} revenue from won deals.` : ''}` : 'Add leads to unlock AI-powered sales reports.'}
           </AiInsight>
 
           {/* Charts */}

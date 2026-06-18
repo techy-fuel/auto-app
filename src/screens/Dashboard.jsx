@@ -5,6 +5,8 @@ import { useIsMobile } from '../hooks/useIsMobile';
 import { AiInsight } from '../components/data/AiInsight';
 import { Button } from '../components/core/Button';
 import { ProgressRing } from '../components/data/ProgressRing';
+import { useCurrency } from '../context/CurrencyContext';
+import { formatCompact } from '../lib/currency';
 
 function SalesChart({ data }) {
   const vals = data.length ? data : [0];
@@ -38,6 +40,7 @@ function SalesChart({ data }) {
 }
 
 export function Dashboard({ user }) {
+  const { currency } = useCurrency();
   
   const [stats, setStats] = useState({ vehicles: 0, leads: 0, available: 0, sold: 0, stockValue: 0 });
   const [topVehicles, setTopVehicles] = useState([]);
@@ -101,7 +104,7 @@ export function Dashboard({ user }) {
           { label: 'Active Leads',   value: loading ? '…' : stats.leads, icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> },
           { label: 'Available Now',  value: loading ? '…' : stats.available, icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg> },
           { label: 'Sold',           value: loading ? '…' : stats.sold, icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg> },
-          { label: 'Stock Value',    value: loading ? '…' : `AED ${(stats.stockValue/1000000).toFixed(1)}M`, icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> },
+          { label: 'Stock Value',    value: loading ? '…' : formatCompact(stats.stockValue, currency), icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> },
         ].map((s, i) => (
           <div key={s.label} style={{ background: 'var(--white)', border: '1px solid var(--border-soft)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-5)', boxShadow: 'var(--shadow-card)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
@@ -130,7 +133,7 @@ export function Dashboard({ user }) {
             </div>
             <div>
               <div style={{ font: '11px/1 var(--font-body)', color: 'var(--text-muted)', marginBottom: 4 }}>Stock value</div>
-              <div style={{ font: 'var(--weight-bold) 26px/1 var(--font-display)', color: 'var(--text-strong)' }}>AED {(stats.stockValue/1000000).toFixed(1)}M</div>
+              <div style={{ font: 'var(--weight-bold) 26px/1 var(--font-display)', color: 'var(--text-strong)' }}>{formatCompact(stats.stockValue, currency)}</div>
             </div>
           </div>
           <SalesChart data={[stats.vehicles, stats.available, stats.sold, stats.leads].filter(Boolean)} />

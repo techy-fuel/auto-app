@@ -5,6 +5,8 @@ import { StatCard } from '../components/data/StatCard';
 import { Tabs } from '../components/navigation/Tabs';
 import { AiInsight } from '../components/data/AiInsight';
 import { supabase } from '../lib/supabase';
+import { useCurrency } from '../context/CurrencyContext';
+import { formatCurrency, formatCompact } from '../lib/currency';
 
 const BANKS = ['Emirates NBD', 'ADCB', 'FAB', 'Mashreq', 'DIB'];
 const STATUSES = ['Approved', 'Pending', 'Under Review', 'Rejected'];
@@ -20,6 +22,7 @@ const banks = [
 const statusTone = { Approved: 'emerald', Pending: 'amber', Rejected: 'red', 'Under Review': 'blue' };
 
 function EmiCalculator() {
+  const { currency } = useCurrency();
   const [price, setPrice] = useState(185000);
   const [down, setDown] = useState(37000);
   const [tenure, setTenure] = useState(48);
@@ -58,15 +61,15 @@ function EmiCalculator() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-4)', textAlign: 'center' }}>
             <div>
               <div style={{ fontSize: 11, opacity: 0.6, marginBottom: 6 }}>Monthly EMI</div>
-              <div style={{ font: 'var(--weight-extra) 28px/1 var(--font-display)', color: 'var(--emerald-400)' }}>AED {Math.round(monthly).toLocaleString()}</div>
+              <div style={{ font: 'var(--weight-extra) 28px/1 var(--font-display)', color: 'var(--emerald-400)' }}>{formatCurrency(Math.round(monthly), currency)}</div>
             </div>
             <div>
               <div style={{ fontSize: 11, opacity: 0.6, marginBottom: 6 }}>Total Amount</div>
-              <div style={{ font: 'var(--weight-bold) 22px/1 var(--font-display)' }}>AED {Math.round(total).toLocaleString()}</div>
+              <div style={{ font: 'var(--weight-bold) 22px/1 var(--font-display)' }}>{formatCurrency(Math.round(total), currency)}</div>
             </div>
             <div>
               <div style={{ fontSize: 11, opacity: 0.6, marginBottom: 6 }}>Total Interest</div>
-              <div style={{ font: 'var(--weight-bold) 22px/1 var(--font-display)', color: '#FCA5A5' }}>AED {Math.round(interest).toLocaleString()}</div>
+              <div style={{ font: 'var(--weight-bold) 22px/1 var(--font-display)', color: '#FCA5A5' }}>{formatCurrency(Math.round(interest), currency)}</div>
             </div>
           </div>
         </div>
@@ -77,6 +80,7 @@ function EmiCalculator() {
 }
 
 export function Finance({ user }) {
+  const { currency } = useCurrency();
   const [tab, setTab] = useState('applications');
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -117,7 +121,7 @@ export function Finance({ user }) {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 'var(--space-4)' }}>
         <StatCard label="Total Applications" value={applications.length} accent="navy" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>} />
         <StatCard label="Approved" value={approved} delta={`${Math.round(approved/applications.length*100)}% rate`} trend="up" accent="emerald" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>} />
-        <StatCard label="Total Financed" value={`AED ${(totalFinanced/1000).toFixed(0)}K`} delta="+22%" trend="up" accent="blue" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>} />
+        <StatCard label="Total Financed" value={formatCompact(totalFinanced, currency)} delta="+22%" trend="up" accent="blue" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>} />
         <StatCard label="Bank Partners" value={banks.filter(b=>b.status==='active').length} accent="violet" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>} />
       </div>
 
@@ -150,8 +154,8 @@ export function Finance({ user }) {
                   <td style={{ padding: '13px 16px', font: 'var(--type-mono)', color: 'var(--text-muted)', fontSize: 12 }}>{a.id}</td>
                   <td style={{ padding: '13px 16px', font: 'var(--weight-semibold) 13px/1 var(--font-body)', color: 'var(--text-strong)' }}>{a.customer}</td>
                   <td style={{ padding: '13px 16px', font: '12px/1 var(--font-body)', color: 'var(--text-muted)' }}>{a.vehicle}</td>
-                  <td style={{ padding: '13px 16px', font: 'var(--weight-bold) 13px/1 var(--font-display)', color: 'var(--text-strong)' }}>AED {a.amount.toLocaleString()}</td>
-                  <td style={{ padding: '13px 16px', font: 'var(--weight-semibold) 13px/1 var(--font-display)', color: 'var(--emerald-700)' }}>AED {a.monthly.toLocaleString()}/mo</td>
+                  <td style={{ padding: '13px 16px', font: 'var(--weight-bold) 13px/1 var(--font-display)', color: 'var(--text-strong)' }}>{formatCurrency(a.amount, currency)}</td>
+                  <td style={{ padding: '13px 16px', font: 'var(--weight-semibold) 13px/1 var(--font-display)', color: 'var(--emerald-700)' }}>{formatCurrency(a.monthly, currency)}/mo</td>
                   <td style={{ padding: '13px 16px', font: '12px/1 var(--font-body)', color: 'var(--text-body)' }}>{a.bank}</td>
                   <td style={{ padding: '13px 16px' }}><Badge tone={statusTone[a.status] || 'slate'} dot>{a.status}</Badge></td>
                   <td style={{ padding: '13px 16px', font: '12px/1 var(--font-body)', color: 'var(--text-muted)' }}>{a.date}</td>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from './lib/supabase';
 import { useIsMobile } from './hooks/useIsMobile';
 import { initPush } from './lib/push';
+import { CurrencyProvider } from './context/CurrencyContext';
 import { Sidebar } from './components/layout/Sidebar';
 import { Topbar } from './components/layout/Topbar';
 import { Dashboard } from './screens/Dashboard';
@@ -129,6 +130,7 @@ export default function App() {
   const Screen = crmScreens[page] || Dashboard;
   const navigate = (p) => { setPage(p); setSidebarOpen(false); };
   return (
+    <CurrencyProvider>
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'var(--bg-app)' }}>
       <Sidebar
         active={page}
@@ -152,5 +154,6 @@ export default function App() {
         </main>
       </div>
     </div>
+    </CurrencyProvider>
   );
 }

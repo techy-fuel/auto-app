@@ -6,6 +6,8 @@ import { Input } from '../components/forms/Input';
 import { StatCard } from '../components/data/StatCard';
 import { AiInsight } from '../components/data/AiInsight';
 import { Tabs } from '../components/navigation/Tabs';
+import { useCurrency } from '../context/CurrencyContext';
+import { formatCurrency, formatCompact } from '../lib/currency';
 
 const emptyForm = { vin: '', make: '', model: '', year: new Date().getFullYear(), color: '', mileage: '', price: '', status: 'Available', fuel_type: '', transmission: '' };
 
@@ -33,6 +35,7 @@ function parseCSV(text) {
 }
 
 export function Inventory({ user }) {
+  const { currency } = useCurrency();
   
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -131,7 +134,7 @@ export function Inventory({ user }) {
           icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v9a2 2 0 0 1-2 2h-3"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>} />
         <StatCard label="Available" value={availableCount} accent="emerald"
           icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>} />
-        <StatCard label="Stock Value (AED)" value={`${(totalValue/1000000).toFixed(1)}M`} accent="blue"
+        <StatCard label={`Stock Value (${currency})`} value={formatCompact(totalValue, currency)} accent="blue"
           icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>} />
         <StatCard label="Sold" value={soldCount} accent="amber"
           icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>} />
@@ -221,7 +224,7 @@ export function Inventory({ user }) {
           <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: 'var(--slate-50)' }}>
-                {['Vehicle', 'Year', 'Color', 'Mileage', 'Price (AED)', 'Fuel', 'Status', ''].map(h => (
+                {['Vehicle', 'Year', 'Color', 'Mileage', `Price (${currency})`, 'Fuel', 'Status', ''].map(h => (
                   <th key={h} style={{ padding: '10px 16px', textAlign: 'left', font: 'var(--weight-semibold) 11px/1 var(--font-display)', color: 'var(--text-muted)', letterSpacing: '0.05em', textTransform: 'uppercase', borderBottom: '1px solid var(--border-soft)', whiteSpace: 'nowrap' }}>{h}</th>
                 ))}
               </tr>
@@ -244,7 +247,7 @@ export function Inventory({ user }) {
                   <td style={{ padding: '14px 16px', font: '13px/1 var(--font-body)', color: 'var(--text-body)' }}>{v.color || '—'}</td>
                   <td style={{ padding: '14px 16px', font: '13px/1 var(--font-body)', color: 'var(--text-muted)' }}>{v.mileage ? `${Number(v.mileage).toLocaleString()} km` : '—'}</td>
                   <td style={{ padding: '14px 16px', font: 'var(--weight-bold) 13px/1 var(--font-display)', color: 'var(--text-strong)' }}>
-                    {v.price ? `AED ${Number(v.price).toLocaleString()}` : '—'}
+                    {v.price ? formatCurrency(Number(v.price), currency) : '—'}
                   </td>
                   <td style={{ padding: '14px 16px', font: '12px/1 var(--font-body)', color: 'var(--text-muted)' }}>{v.fuel_type || '—'}</td>
                   <td style={{ padding: '14px 16px' }}>
